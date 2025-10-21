@@ -1,26 +1,29 @@
 import pygame
-import os
+import os # for file management
 import time
-import random
+import random 
 
-path_images=os.path.join(os.getcwd(),"Images")
+path_images=os.path.join(os.getcwd(),"Images") # gets current directory and adds "Images" to get the image folder
 
-screen_size = (1250,680)
-win = pygame.display.set_mode(screen_size)
+screen_size = (1250,680) # will be changed after
+win = pygame.display.set_mode(screen_size) # sets up the display
 pygame.display.set_caption("Combat")
 pygame.init()
 #main_font=pygame.font.Font(None,25)
 
 
 
-# load images
+"""
+loads images
+example use : load_images() -> {'Minishrum-b': <pygame image loaded>, 'Minishrum-f': <pygame image loaded>}
+"""
 def load_images():
     images_list = {}
-    for name in os.listdir(path_images):
+    for name in os.listdir(path_images): # gets all files and folders from the image folder
         if ".png" in name :
-            image = pygame.image.load(os.path.join(path_images, name))
+            image = pygame.image.load(os.path.join(path_images, name)) # loads the image
             if name == "background.png": 
-                image=pygame.transform.rotozoom(image, 0, 0.65)
+                image=pygame.transform.rotozoom(image, 0, 0.65) # reduces size by multiplying by 0.65
             elif name == "player_turn.png": 
                 image=pygame.transform.rotozoom(image, 0, 0.2)
             elif name == "oponent_turn.png": 
@@ -34,20 +37,25 @@ def load_images():
     return images_list
 images_list = load_images()
 
-print(images_list)
 
+"""
+example use : Creature('Minishrum', True, (0,0))
+Instantiates a Minishrum at coordinates (0,0) that belongs to the player
+"""
 class Creature:
     def __init__(self, name, belongs_to_player, position):
         self.name = name
         self.belongs_to_player = belongs_to_player
         print(name + ("-b" if belongs_to_player else "-f") )
-        self.image = images_list[ name + ("-b" if belongs_to_player else "-f") ]
+        self.image = images_list[ name + ("-b" if belongs_to_player else "-f") ] # gets the image from the loaded images
         self.image_icon = pygame.transform.rotozoom(images_list[ name +  "-f" ], 0, 0.2)
         self.image_base_size = self.image.get_size()
         print(self.image_base_size)
         self.position = position
 
         self._random_movement = random.randint(0,5)
+    
+    # will be modified, used to make the creatures 'move' and not stand still
     def _get_random_movement(self):
         self._random_movement+=random.randint(-2,2)/10
         return self._random_movement
@@ -58,6 +66,7 @@ class Creature:
 # creation of pokemon for player 
 my_creatures = []
 _names = ["Mini-jack", "Minishrum", "Mini-jack"]
+# below is the list of all positions in order of use for the player's creatures
 _pos=[(screen_size[0]/5+96, screen_size[1]*3/5+96), 
              (screen_size[0]/5+190+96, screen_size[1]*3/5+30-10+96),
              (screen_size[0]/5+130+96, screen_size[1]*3/5+100+96),
@@ -69,6 +78,7 @@ for index in range(len(_names)):
 # creation of pokemon for oponent 
 oponent_creatures = []
 _names = ["Minishrum", "Mini-jack"]
+# below is the list of all positions in order of use for the oponent's creatures
 _pos2=[
             (screen_size[0]*4/5+70, screen_size[1]*2.3/5+96),
             (screen_size[0]*4/5+160, screen_size[1]*2.3/5+96),
@@ -78,14 +88,14 @@ for index in range(len(_names)):
 
 
 
-
+# the turn order (example: [<Creature()>, <Creature()>])
 turn_order = my_creatures[:];turn_order.extend(oponent_creatures)
 
 
 
 
 
-
+# complex, used to zoom towards a Creature given in argument
 _global_zoom = 1
 _zoom_max = 2
 _global_zoom_point = [0,0]
@@ -109,7 +119,7 @@ def zoom_towards(Creature):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-    
+# dezooms
 def de_zoom():
     global _global_zoom 
     global _global_zoom_point 
@@ -130,7 +140,7 @@ def de_zoom():
 
 
 
-# drawing function
+# drawing function, executed each frame
 def draw():
     win.fill((0,0,0))
 
@@ -192,7 +202,7 @@ while 1:
     if keys[pygame.K_e]:
         zoom_towards(my_creatures[1])
     if keys[pygame.K_r]:
-        zoom_towards(my_creatures[2])
+        zoom_towards(oponent_creatures[2])
     if keys[pygame.K_f]:
         de_zoom()
     
