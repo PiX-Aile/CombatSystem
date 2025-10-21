@@ -202,7 +202,7 @@ while 1:
     if keys[pygame.K_e]:
         zoom_towards(my_creatures[1])
     if keys[pygame.K_r]:
-        zoom_towards(oponent_creatures[2])
+        zoom_towards(my_creatures[2])
     if keys[pygame.K_f]:
         de_zoom()
     
