@@ -42,9 +42,9 @@ def load_images():
                 image.fill((0, 0, 0, 100), None, pygame.BLEND_RGBA_MULT)
             else:
                 if "-b" in name:
-                    image = pygame.transform.rotozoom(image, 0, 2.4/1.3)
+                    image = pygame.transform.rotozoom(image, 0, 2.4/1.3 *0.8)
                 if "-f" in name:
-                    image = pygame.transform.rotozoom(image, 0, 1.8/1.3)
+                    image = pygame.transform.rotozoom(image, 0, 1.8/1.3 *0.8)
                     #image.fill((255, 255, 255, 170), None, pygame.BLEND_RGBA_MULT) # darken
                 
                     
@@ -64,7 +64,7 @@ class Creature:
         self.belongs_to_player = belongs_to_player
         print(name + ("-b" if belongs_to_player else "-f") )
         self.image = images_list[ name + ("-b" if belongs_to_player else "-f") ] # gets the image from the loaded images
-        self.image_icon = pygame.transform.rotozoom(images_list[ name +  "-f" ], 0, 0.2)
+        self.image_icon = pygame.transform.rotozoom(images_list[ name +  "-f" ], 0, 0.2/0.8)
         self.image_base_size = self.image.get_size()
         print(self.image_base_size)
         self.position = position
@@ -83,21 +83,20 @@ class Creature:
 my_creatures = []
 _names = ["pumpkin", "pumpkin", "pumpkin"]
 # below is the list of all positions in order of use for the player's creatures
-_pos=[(screen_size[0]/5+96, screen_size[1]*3/5+96), 
-             (screen_size[0]/5+190+96, screen_size[1]*3/5+30-10+96),
-             (screen_size[0]/5+130+96, screen_size[1]*3/5+100+96),
-             (screen_size[0]/5+60+96, screen_size[1]*3/5+85+96)
+_pos=[(screen_size[0]/4-90, screen_size[1]*3/6), 
+      (screen_size[0]/4+50, screen_size[1]*3/6-20), 
+      (screen_size[0]/4+20, screen_size[1]*3/6+30), 
              ]
 for index in range(len(_names)):
     my_creatures.append(Creature(_names[index], True, _pos[index]))
 
 # creation of pokemon for oponent 
 oponent_creatures = []
-_names = ["pumpkin", "pumpkin"]
+_names = ["pumpkin"]
 # below is the list of all positions in order of use for the oponent's creatures
 _pos2=[
-            (screen_size[0]*4/5+70, screen_size[1]*2.3/5+100),
-            (screen_size[0]*4/5+160, screen_size[1]*2.3/5+96),
+            (screen_size[0]*3/5, screen_size[1]*2/6),
+            
         ]
 for index in range(len(_names)):
     oponent_creatures.append(Creature(_names[index], False, _pos2[index]))
