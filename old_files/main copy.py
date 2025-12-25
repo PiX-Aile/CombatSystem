@@ -16,7 +16,7 @@ pygame.display.set_caption("Combat")
 pygame.init()
 pygame.font.init()
 #main_font=pygame.font.Font(None,25)
-font_atk = pygame.font.Font('./a.ttf', 18)
+font_atk = pygame.font.Font('./Fonts/a.ttf', 18)
 
 
 
