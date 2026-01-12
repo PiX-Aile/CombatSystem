@@ -165,7 +165,7 @@ def draw(win, screen_size, map, my_trainer_id):
             
             if (element.get('player')==my_trainer_id):
                 _current_zoomed_creature +=1
-            if (element.get('player')!=my_trainer_id) or _current_zoomed_creature!=_zoomed_creature:
+            if ((element.get('player')!=my_trainer_id) or _current_zoomed_creature!=_zoomed_creature) and element.get('player')!="opponent" and element.get('player'):
                 image.fill((255, 255, 255, 150), None, pygame.BLEND_RGBA_MULT)
 
 
