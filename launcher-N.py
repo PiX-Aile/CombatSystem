@@ -15,16 +15,18 @@ path_images=os.path.join(os.getcwd(),"Images")
 class Pokemon():
     def __init__(self, name):
         self.name = name
+        self.atks = ["SAlec", "SElec", "SFire"]
 
 
 import time
 import random
 
-my_poke = [Pokemon("Pumpking"), Pokemon("Pumpking"), Pokemon("Minishrum")]
+my_poke = [Pokemon("Pumpking"), Pokemon("Pumpking"), Pokemon("Pumpking")]
 
-opponent = Pokemon("Pumpking")
+opponent = Pokemon("Samourai")
 
-trainer_id = "AK" + str(random.randint(0,60))
+#trainer_id = random.choice(["AK", "N"])
+trainer_id = "N" # 'AK' or 'N'
 
 battle_id = "1"
 
