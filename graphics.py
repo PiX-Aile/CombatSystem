@@ -223,8 +223,8 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
 
         for i in range(animation_duration):
 
-            if (i%8==3):
-                map = multiplayer.load_info(server, [])
+            #if (i%8==3):
+            #    map = multiplayer.load_info(server, [])
 
             _global_zoom_point[0]+=(0-_old_point[0])/animation_duration
             _global_zoom_point[1]+=(-70-_old_point[1])/animation_duration
@@ -250,8 +250,8 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
         _old_trainer_position = trainer_position[:]
         for i in range(animation_duration):
 
-            if (i%8==3):
-                map = multiplayer.load_info(server, [])
+            #if (i%8==3):
+            #    map = multiplayer.load_info(server, [])
 
             _global_zoom_point[0]+=(-100-_old_point[0])/animation_duration
             _global_zoom_point[1]+=(30-_old_point[1])/animation_duration

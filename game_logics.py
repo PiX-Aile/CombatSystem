@@ -40,7 +40,8 @@ def _compute_turn_order(map):
             possible_elements.append(index)
     
     for i in range(13):
-        new_order.append(random.choice(possible_elements))
+        new_order.extend(possible_elements)
+        new_order.extend(possible_elements)
             
     map[turn_order_index]['data'] = new_order
 
@@ -98,13 +99,12 @@ def player_initiation_client(server, my_poke, trainer_id, screen_size):
 
 def client_attack(current_player_index, data, map, oponent, player_names):
     for a in data:
-        print(a)
+        
         atk_name, creature_index = a["move_name"], a["creature_index"]
         base_creature_index = creature_index
         #tunr_order
         selected_sould_index_in_map = -1
         for soul in range(len(map)):
-            print(current_player_index, player_names)
             if map[soul].get("player")==player_names[current_player_index]:
                 creature_index -=1
                 if creature_index == 0: # found selected pokemon
@@ -113,9 +113,11 @@ def client_attack(current_player_index, data, map, oponent, player_names):
         # check
         
         if map[0]["data"][0] != selected_sould_index_in_map:
+            
             return
         
         print(creature_index)
+        print("launching attack")
         start_coordinates,_a = find_coordinates_for_player_initiation_server(len(map[1]["players_ids"]))
         start_coordinates = start_coordinates[base_creature_index-1+current_player_index*2]
         start_coordinates = {"x": start_coordinates["x"]-30, "y": start_coordinates["y"]-30}

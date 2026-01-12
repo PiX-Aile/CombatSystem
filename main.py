@@ -6,7 +6,20 @@ import multiplayer
 import graphics
 
 
+
+
 def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponent):
+
+    def load_map(server, data_to_send, map):
+        
+        loaded = multiplayer.load_info(server, data_to_send)
+        
+        if loaded != map:
+            for i in range(len(map)):
+                map.pop(0)
+            map.extend(loaded)
+        
+        
     
     server = multiplayer.multiplayer(battle_id, opponent) # handles all the connection, and either creates of connects to a server
 
@@ -41,10 +54,14 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
                 move_name = my_poke[selected_creature-1].atks[selected_move-1]
                 data_to_send.append({'move_name':move_name, 'creature_index': selected_creature})
 
-        if (frame_nb%4==0):
-            
-            map = multiplayer.load_info(server, data_to_send)
+        if (frame_nb%10==0):
+            current_time = time.time()
+            start_new_thread(load_map, (server,data_to_send, map))
             data_to_send = []
+            #map = multiplayer.load_info(server, data_to_send)
+            #data_to_send = []
+            #print("time loading: ", time.time()-current_time)
+            
         
         a = time.time()
         #print(1/(a-old_time)) # displayes fps
