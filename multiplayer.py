@@ -31,7 +31,7 @@ def multiplayer(battle_id, opponent): #main.py
                     print("Found perfect server")
                     return a # has found right server
 
-            except (ConnectionRefusedError, EOFError) as f: # no server at that ip
+            except (ConnectionRefusedError, EOFError, socket.gaierror) as f: # no server at that ip
 
                 print("no server at that ip, error message:", str(f))
                 if empty_port_found==0:
@@ -167,7 +167,7 @@ def launch_server(battle_id, server_addr, server_port, local_port, opponent):#se
     start_new_thread(search_for_clients,(s,battle_id))
     
     #return multiplayer(battle_id, opponent)
-    return connect(server_addr, server_port, battle_id)
+    return connect("localhost", local_port, battle_id)
 
 
 
