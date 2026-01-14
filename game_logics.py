@@ -39,9 +39,9 @@ def _compute_turn_order(map):
         if not( "_" in map[index]['name']):
             possible_elements.append(index)
     
-    for i in range(13):
+    for i in range(2):
         new_order.extend(possible_elements)
-        new_order.extend(possible_elements)
+        
             
     map[turn_order_index]['data'] = new_order
 
