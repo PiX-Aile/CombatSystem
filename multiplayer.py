@@ -167,7 +167,7 @@ def launch_server(battle_id, server_addr, server_port, local_port, opponent):#se
     start_new_thread(search_for_clients,(s,battle_id))
     
     #return multiplayer(battle_id, opponent)
-    return connect("localhost", local_port, battle_id)
+    return connect(server_addr, server_port, battle_id)
 
 
 
