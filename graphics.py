@@ -99,7 +99,12 @@ def draw(win, screen_size, map, my_trainer_id):
             
                 for index in element['data']:
 
-                    icon_image = images_list[map[index]['name'].replace('-b', '-f')+"_icon"]    
+                    try:
+
+                        icon_image = images_list[map[index]['name'].replace('-b', '-f')+"_icon"]   
+                    except KeyError:
+                        print("key error in graphics")
+                        continue
                     creature_icon_margin = (60,35-icon_image.get_size()[1]/2)
 
                     if "-b" in map[index]['name']:
@@ -174,6 +179,10 @@ def draw(win, screen_size, map, my_trainer_id):
             element['position']['y-offset']+=random.randint(-2,2)/10
         else:
             offset = 0
+
+        if element.get("zoom") :# zoom pendant le dash
+            image=pygame.transform.rotozoom(image, 0, element.get("zoom"))
+        
         win.blit(image, (x_position-image.get_size()[0] + _global_zoom_point[0]+(_global_zoom_point[0]+x_position-screen_size[0]/2)*(_global_zoom-1),offset+ y_position-image.get_size()[1]+ _global_zoom_point[1]+(_global_zoom_point[1]+y_position-screen_size[1]/2)*(_global_zoom-1)) )
 
         

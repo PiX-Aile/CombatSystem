@@ -31,7 +31,7 @@ def multiplayer(battle_id, opponent): #main.py
                     print("Found perfect server")
                     return a # has found right server
 
-            except (ConnectionRefusedError, EOFError, socket.gaierror) as f: # no server at that ip
+            except (ConnectionRefusedError, EOFError) as f: # no server at that ip
 
                 print("no server at that ip, error message:", str(f))
                 if empty_port_found==0:
@@ -82,11 +82,13 @@ def server(oponent):#server
         timea += 1
         #if (timea)%20==0:
         #    map.append({'name': random.choice(['SAlec', 'SElec', 'SFire']), 'position': {'x': 630, 'y': 380}, 'destination': {'x': 630, 'y': 380}, 'arrival_time': 0.1, 'starting_time': int(time.time()*10)/10, 'explosion_time': 0.7})
-        if (timea)%20==0:#time for cleanup
+        if (timea)%10==0:#time for cleanup
             current_index = 0
             for el in map:
-                if not el.get("player") and not "_" in el['name']:# is projectile
+                if not el.get("player") and not el['name'].startswith("_"):# is projectile
+                    print("there is a projectile")
                     if el['starting_time']+el['arrival_time']+el['explosion_time']<time.time():
+                        print("deleting projectile")
                         del map[current_index]
                         # reduce all turn_order
                         game_logics.reduce_all_turn_order(map, current_index)
@@ -105,7 +107,8 @@ def server(oponent):#server
             
             # ennemy attack ?
             if map[map[0]["data"][0]]["player"] == "opponent":
-                game_logics.ennemy_attack(map, oponent)
+                #game_logics.ennemy_attack(map, oponent)
+                game_logics.ennemy_attack(map, map[0]["data"][0])
             
 
             
@@ -207,7 +210,7 @@ def player_initiation_server(conn): #server
         map.append(data[a])
     nb = 0
     for el in map:
-        if (not "_" in el['name'] and el.get('player') and el['player']!='opponent'):
+        if (not ( el['name'].startswith("_")) and el.get('player') and el['player']!='opponent'):
             if el.get("position"): # on déplace les 2 premiers poke
                 el['destination'] = coordinates[nb]
                 el['arrival_time'] = 0.5
