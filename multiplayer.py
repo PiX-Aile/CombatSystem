@@ -85,6 +85,7 @@ def server(oponent):#server
         if (timea)%10==0:#time for cleanup
             current_index = 0
             for el in map:
+                """ #deleting projectiles, now handled in game logics
                 if not el.get("player") and not el['name'].startswith("_"):# is projectile
                     print("there is a projectile")
                     if el['starting_time']+el['arrival_time']+el['explosion_time']<time.time():
@@ -95,6 +96,7 @@ def server(oponent):#server
                         
                         #game_logics._compute_turn_order(map)
                         current_index -=1
+                """
                 if el.get("destination") and int(el['position']['x']) == int(el['destination']['x']) and int(el['position']['y']) == int(el['destination']['y']):
                     if el.get("player"): # not a projectile:
                         print("destination no longer needed for :", el['name'])
@@ -194,7 +196,7 @@ def load_info(server, data_to_send): # client
 
 def player_initiation_server(conn): #server
     print("initialising new plaer")
-    data = pickle.loads(conn.recv(2000)) # serveur bloqué là
+    data = pickle.loads(conn.recv(2000))
 
     map[1]['players_ids'].append(data[0]['player'])
     

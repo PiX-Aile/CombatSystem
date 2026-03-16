@@ -4,10 +4,11 @@ import random
 import multiplayer
 import os
 
+from game_logics import all_coordinates
 
-_global_zoom = 1
+
+_global_zoom = 1 # set at the beginning of loop
 _global_zoom_point = None
-_zoomed_creature = None
 trainer_position = None
 
 font_atk = pygame.font.Font('./Fonts/a.ttf', 18)
@@ -26,18 +27,23 @@ def load(path_images):
 
             if name == "background.png": 
                 image=pygame.transform.rotozoom(image, 0, 0.8)
+
             elif name == "player_turn.png": 
-                image=pygame.transform.rotozoom(image, 0, 0.2)
+                image=pygame.transform.rotozoom(image, 0, 1.4)
             elif name == "oponent_turn.png": 
-                image = pygame.image.load(os.path.join(path_images, "player_turn.png"))
-                image=pygame.transform.rotozoom(image, 0, 0.2)
-                image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT) # (0, 255, 100, 255)
+                image = pygame.transform.rotozoom(image, 0, 1.4)
             elif name == "ally_turn.png": 
-                image = pygame.image.load(os.path.join(path_images, "player_turn.png"))
-                image=pygame.transform.rotozoom(image, 0, 0.2)
-                image.fill((0, 255, 100, 255), None, pygame.BLEND_RGBA_MULT) # (0, 255, 100, 255)
+                image = pygame.transform.rotozoom(image, 0, 1.4)
+
+
+
             elif "trainer_" in name : # if trainer
                 image=pygame.transform.rotozoom(image, 0, 3)
+
+            elif name == "hp-full.png" or name=="hp-empty.png": 
+                 image=pygame.transform.rotozoom(image, 0, 0.8)
+            elif name == "ennemy-hp-full.png" or name=="ennemy-hp-empty.png": 
+                 image=pygame.transform.rotozoom(image, 0, 2)
             
                 
 
@@ -69,6 +75,8 @@ def load(path_images):
             image = pygame.image.load(os.path.join(path_images, "Animations", name)) # loads the image  
     
             image = pygame.transform.rotozoom(image, 0, 1.5*800/image.get_size()[0])
+            if "Piplup" in name:
+                image = pygame.transform.rotozoom(image, 0, 0.2)
             image_size = image.get_size()
             for y in range(y_):
                 for x in range(x_): 
@@ -91,13 +99,16 @@ def draw(win, screen_size, map, my_trainer_id):
     win.blit(image, (_global_zoom_point[0]+(_global_zoom_point[0]-screen_size[0]/2)*(_global_zoom-1), _global_zoom_point[1]+(_global_zoom_point[1]-screen_size[1]/2)*(_global_zoom-1)))
 
     
-    _current_zoomed_creature = 0
     for element in map:
         if element['name'].startswith("_"):
             if element['name'] == "_turn_order":
                 count = 0
             
                 for index in element['data']:
+                    
+                    if (count>3):
+                        continue
+                        
 
                     try:
 
@@ -117,8 +128,8 @@ def draw(win, screen_size, map, my_trainer_id):
                         background_image = images_list["oponent_turn"].copy()
                         #background_image = images_list["oponent_turn"].copy()
                         
-                    win.blit(background_image, (-60 if count>0 else 0,(count)*60))
-                    win.blit(icon_image, (creature_icon_margin[0]+(-60 if count>0 else 0), (count)*60+creature_icon_margin[1]))                        
+                    win.blit(background_image, (0 if count>0 else 20,(count)*70))
+                    win.blit(icon_image, (creature_icon_margin[0]+(-20 if count>0 else 0), (count)*70+creature_icon_margin[1]))                        
 
                     count += 1
 
@@ -153,6 +164,7 @@ def draw(win, screen_size, map, my_trainer_id):
                 image = images_list[element['name']]  
             else: # si on a dépassé la frame max
                   minus_index = 0
+                  # erreur sur cette ligne -> fichier d'attaque n'existe pas ou pas le bon nom
                   while not images_list.get(element['name']+"_"+str(current_frame-minus_index)):
                       minus_index+=1
                   image = images_list[element['name']+"_"+str(current_frame-minus_index)]  
@@ -168,10 +180,13 @@ def draw(win, screen_size, map, my_trainer_id):
         if _global_zoom !=1:
             image=pygame.transform.rotozoom(image, 0,_global_zoom)
             
-            if (element.get('player')==my_trainer_id):
-                _current_zoomed_creature +=1
-            if ((element.get('player')!=my_trainer_id) or _current_zoomed_creature!=_zoomed_creature) and element.get('player')!="opponent" and element.get('player'):
-                image.fill((255, 255, 255, 150), None, pygame.BLEND_RGBA_MULT)
+            
+            
+            # old code to reduce opacity of not selected
+            if ((element.get('player')!=my_trainer_id) or element!=map[map[0]["data"][0]]) :
+                if _global_zoom>=1: # to ignore animation of start
+                    image.fill((255, 255, 255, 100 + 150 *(most_zoomed-_global_zoom) ), None, pygame.BLEND_RGBA_MULT)
+            
 
 
         offset = element['position'].get('y-offset')
@@ -183,10 +198,30 @@ def draw(win, screen_size, map, my_trainer_id):
         if element.get("zoom") :# zoom pendant le dash
             image=pygame.transform.rotozoom(image, 0, element.get("zoom"))
         
-        win.blit(image, (x_position-image.get_size()[0] + _global_zoom_point[0]+(_global_zoom_point[0]+x_position-screen_size[0]/2)*(_global_zoom-1),offset+ y_position-image.get_size()[1]+ _global_zoom_point[1]+(_global_zoom_point[1]+y_position-screen_size[1]/2)*(_global_zoom-1)) )
 
-        
-        #win.blit(images_list[element['name']], (element['position']['x'], element['position']['y']))
+        coordinates = (x_position-image.get_size()[0] + _global_zoom_point[0]+(_global_zoom_point[0]+x_position-screen_size[0]/2)*(_global_zoom-1),offset+ y_position-image.get_size()[1]+ _global_zoom_point[1]+(_global_zoom_point[1]+y_position-screen_size[1]/2)*(_global_zoom-1))
+        win.blit(image, coordinates)
+
+        # ui of hps :
+        if element.get("hp") and  _global_zoom ==1 :
+            
+
+            if element["player"] == 'opponent':
+                coordinates = (280,-230)
+                empty_image = images_list["ennemy-hp-empty"]
+                full_image = images_list["ennemy-hp-full"]
+
+            else:
+                coordinates = (coordinates[0]-10, coordinates[1]-97)
+                empty_image = images_list["hp-empty"]
+                full_image = images_list["hp-full"]
+
+            full_image = full_image.subsurface((0,0,full_image.get_size()[0]*element['hp']['current']/element['hp']['full'], full_image.get_size()[1]))
+            
+            
+            win.blit(full_image, coordinates)
+            win.blit(empty_image,  coordinates)
+                
 
         
 
@@ -200,6 +235,13 @@ def draw(win, screen_size, map, my_trainer_id):
             
                     
         win.blit(image2, positions[current_player])
+    # battle ui
+    if _global_zoom==most_zoomed:
+        current_poke = map[map[0]["data"][0]]
+        for i in range(0, len(current_poke["atks"])):
+            text_co = (screen_size[0]*3/5, screen_size[1]*2/5+30*i)
+            win.blit(font_atk.render(f'{i+1} : {current_poke["atks"][i].replace("_", " ")}', True, (255,255,255)), text_co)
+
 
     """
     if is_multiplayer==1:
@@ -211,71 +253,117 @@ def draw(win, screen_size, map, my_trainer_id):
     
 
 
+waiting_time = 20
+animation_duration = 15
+zoom_delay = 0
 
-def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, clock):
-    global _global_zoom, _global_zoom_point, trainer_position, _zoomed_creature
-    animation_duration = 20
+most_zoomed = 2
+
+super_loin_trainer_position = [-200, 400]
+
+def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, clock, has_already_attacked):
+    global _global_zoom, _global_zoom_point, trainer_position, zoom_delay
+    
 
     if _global_zoom_point==None:
         _global_zoom_point= [0,-70]
-        trainer_position = [screen_size[0]/18, screen_size[1]*5/8]
-        _global_zoom =1
+        trainer_position = super_loin_trainer_position[:]
+        _global_zoom =0
         return 0 # no selection
     
     if inputs[pygame.K_LSHIFT]:
         return -1
 
-    if inputs[pygame.K_a]: # at start or if a pressed, global view
+    if zoom_delay>=0:
+        zoom_delay -=1
+
+    if _global_zoom!=1 and (has_already_attacked) and zoom_delay<0: # (map[map[0]["data"][0]].get("player") != my_trainer_id or has_already_attacked)
         _old_point = _global_zoom_point[:]
         _old_zoom = _global_zoom
         _old_trainer_position = trainer_position[:]
+        zoom_delay = waiting_time
 
+        # first everythiing but trainer
         for i in range(animation_duration):
 
             #if (i%8==3):
             #    map = multiplayer.load_info(server, [])
 
-            _global_zoom_point[0]+=(0-_old_point[0])/animation_duration
-            _global_zoom_point[1]+=(-70-_old_point[1])/animation_duration
             
-            trainer_position[0]+=(screen_size[0]/18-_old_trainer_position[0])/animation_duration
-            trainer_position[1]+=(screen_size[1]*5/8-_old_trainer_position[1])/animation_duration
+            position = (100, -30)
+            position = (0, 10)
+
+            _global_zoom_point[0]+=(-position[0]-_old_point[0])/animation_duration
+            _global_zoom_point[1]+=(-position[1]-_old_point[1])/animation_duration
+            
+            
             
             _global_zoom += (1-_old_zoom)/animation_duration
             draw(win, screen_size, map, my_trainer_id)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-            clock.tick(60)
-        return 0 # no selection
+            clock.tick(80)
+        # now character
+        for i in range(animation_duration):
+            trainer_position[0]+=(screen_size[0]/18-_old_trainer_position[0])/animation_duration
+            trainer_position[1]+=(screen_size[1]*5/8-_old_trainer_position[1])/animation_duration
+            draw(win, screen_size, map, my_trainer_id)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+            clock.tick(80)
 
-    elif inputs[pygame.K_1] or inputs[pygame.K_2] or inputs[pygame.K_3]:
-        _zoomed_creature =  inputs[pygame.K_1]*( inputs[pygame.K_2]==0)*( inputs[pygame.K_3]==0) +2*  inputs[pygame.K_2]*( inputs[pygame.K_1]==0)*( inputs[pygame.K_3]==0) +3* inputs[pygame.K_3]*( inputs[pygame.K_2]==0)*( inputs[pygame.K_1]==0)
-        if _zoomed_creature==0:
-            return -1# don't change selected
+        _global_zoom=1
+    
+    if _global_zoom==1 and map[map[0]["data"][0]].get("player") == my_trainer_id and (not has_already_attacked)  and zoom_delay<0:
+
+        zoom_delay = waiting_time
 
         _old_point = _global_zoom_point[:]
         _old_zoom = _global_zoom
         _old_trainer_position = trainer_position[:]
+        # first trainer animation
+        for i in range(animation_duration):
+            trainer_position[0]+=(super_loin_trainer_position[0]-_old_trainer_position[0])/animation_duration
+            trainer_position[1]+=(super_loin_trainer_position[1]-_old_trainer_position[1])/animation_duration
+            draw(win, screen_size, map, my_trainer_id)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+            clock.tick(80)
+        # now other characters
         for i in range(animation_duration):
 
             #if (i%8==3):
             #    map = multiplayer.load_info(server, [])
 
-            _global_zoom_point[0]+=(-100-_old_point[0])/animation_duration
-            _global_zoom_point[1]+=(30-_old_point[1])/animation_duration
+            #destination = (100, -30)
+
+            destination =( -all_coordinates[0][0]['x']+screen_size[0]/2,
+                -all_coordinates[0][0]['y']+screen_size[1]/2)
+
+            co = map[map[0]["data"][0]]['position']
+            destination = (screen_size[0]/2-co['x']+60, screen_size[1]/2-co['y']+100
+                           )
+
+
+            _global_zoom_point[0]+=(destination[0]-_old_point[0])/animation_duration
+            _global_zoom_point[1]+=(destination[1]-_old_point[1])/animation_duration
             
-            trainer_position[0]+=(-500-_old_trainer_position[0])/animation_duration
-            trainer_position[1]+=(screen_size[1]-_old_trainer_position[1])/animation_duration
             
-            _global_zoom += (1.2-_old_zoom)/animation_duration
+            
+            _global_zoom += (most_zoomed-_old_zoom)/animation_duration
             draw(win, screen_size, map, my_trainer_id)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-            clock.tick(60)
-        return _zoomed_creature # change selected 
-    return -1 # don't change selected
+            
+            clock.tick(80)
+        _global_zoom = most_zoomed
+        
+
+
     
 
 

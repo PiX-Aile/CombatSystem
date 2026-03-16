@@ -10,11 +10,21 @@ import graphics
 
 def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponent):
 
-    def load_map(server, data_to_send, map):
+    has_already_attacked = ["yes"] # for animations, just after choosing attack, pokemon is still in turn order, but it has to dezoom to show attack
+    # is equal to yes at first to that at the very beginning it zoomes right
+
+    def load_map(server, data_to_send, map, has_already_attacked):
         
         loaded = multiplayer.load_info(server, data_to_send)
         
         if loaded != map:
+
+            #did the first in torn_order change ?
+            if (len(map)>0 and len(map[0].get("data"))>0 and map[0].get("data")[0] != loaded[0].get("data")[0]):
+                while has_already_attacked:
+                    del has_already_attacked[0]
+                print("new turn order !!", loaded[0]["data"][0])
+
             for i in range(len(map)):
                 map.pop(0)
             map.extend(loaded)
@@ -40,23 +50,22 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
 
         keys = pygame.key.get_pressed()
 
-        output = graphics.visual_animations(keys, screen_size, win, map, trainer_id, server, clock)
+        graphics.visual_animations(keys, screen_size, win, map, trainer_id, server, clock, has_already_attacked)
         graphics.draw(win, screen_size, map, trainer_id)
 
-        
-        if output!=-1:
-            selected_creature = output
+    
 
 
-        if (not data_to_send) and keys[pygame.K_LSHIFT] and selected_creature:
+        if (not data_to_send)  :
             selected_move =  keys[pygame.K_1]*( keys[pygame.K_2]==0)*( keys[pygame.K_3]==0) +2*  keys[pygame.K_2]*( keys[pygame.K_1]==0)*( keys[pygame.K_3]==0) +3* keys[pygame.K_3]*( keys[pygame.K_2]==0)*( keys[pygame.K_1]==0)
+            #selected_creature = 0
             if selected_move:
-                move_name = my_poke[selected_creature-1].atks[selected_move-1]
-                data_to_send.append({'move_name':move_name, 'creature_index': selected_creature})
+                has_already_attacked.append("yess")
+                data_to_send.append({'selected_move':selected_move})
 
         if (frame_nb%10==0):
             current_time = time.time()
-            start_new_thread(load_map, (server,data_to_send, map))
+            start_new_thread(load_map, (server,data_to_send, map, has_already_attacked))
             data_to_send = []
             #map = multiplayer.load_info(server, data_to_send)
             #data_to_send = []

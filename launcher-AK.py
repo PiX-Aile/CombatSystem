@@ -2,7 +2,7 @@ import pygame
 import os 
 import random
 
-screen_size = (1250*0.85,680*0.9) # will be changed after
+screen_size = (1250*0.85,680*0.9) # will be changed after 1062, 612
 #screen_size = (1250*0.8,680*0.8)
 win = pygame.display.set_mode(screen_size) # sets up the display
 pygame.display.set_caption("Game")
@@ -15,15 +15,19 @@ path_images=os.path.join(os.getcwd(),"Images")
 class Pokemon():
     def __init__(self, name):
         self.name = name
-        self.atks = ["dash_sword"]
+        self.atks = []
 
 
 import time
 import random
 
 my_poke = [Pokemon("Pumpkid"), Pokemon("Pumpkid"), Pokemon("Pumpkid")]
+my_poke[0].atks = ["dash_Fire", "dash_Sword", "dash_Sword"]
+my_poke[1].atks = ["Piplup", "Piplup", "Piplup"]
+my_poke[2].atks = ["Elec_Spell", "Plasma_Spell", "Fire_Spell"]
 
 opponent = Pokemon("Samourai")
+opponent.atks = ["Psy"]
 
 #trainer_id = random.choice(["AK", "N"])
 trainer_id = "AK" # 'AK' or 'N'

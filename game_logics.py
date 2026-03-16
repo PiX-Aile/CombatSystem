@@ -14,8 +14,9 @@ def init_map(opponent): #server
 
 
     fake_screen_size = (1250*0.8,680*0.8) 
-    _opponent_coordinates = {'x': fake_screen_size[0]*10/11+50, 'y': fake_screen_size[1]*5/9, 'y-offset':0}
-    map.append({'name':opponent.name+'-f','player':'opponent','position':_opponent_coordinates, 'hp':'130,130','atks':opponent.atks})
+    #_opponent_coordinates = {'x': fake_screen_size[0]*10/11+50, 'y': fake_screen_size[1]*5/9, 'y-offset':0}
+    _opponent_coordinates = {'x': 940,'y':290, 'y-offset':0}
+    map.append({'name':opponent.name+'-f','player':'opponent','position':_opponent_coordinates, 'hp':{'current': 60, 'full': 130},'atks':opponent.atks})
 
     return map
 
@@ -58,25 +59,48 @@ def play(map, inputs): #server
 
 
 
+all_coordinates = [
 
+
+    [
+            {'x': 370, 'y':460, 'y-offset': 1},
+            {'x': 600, 'y': 440, 'y-offset': -2},
+            {'x': 670, 'y': 490, 'y-offset': 1},
+    ],
+    
+    [
+            {'x': 370, 'y': 460, 'y-offset': 1},
+            {'x': 550,'y': 440, 'y-offset': -2},
+            {'x': 650,'y': 440, 'y-offset': 1},
+            {'x': 740, 'y': 490, 'y-offset': 1}
+    ]
+
+
+]
 
 def find_coordinates_for_player_initiation_server(nb):
     fake_screen_size = (1250*0.8,680*0.8) 
     if nb==1:
+        """
         coordinates = [
             {'x': int(fake_screen_size[0]/4-10+128*2.4/1.3*0.8), 'y': int(fake_screen_size[1]*3/6+3-15+20+128*2.4/1.3*0.8)+30, 'y-offset': 1},
             {'x': fake_screen_size[0]/4+240-10+128*2.4/1.3*0.8, 'y': int(fake_screen_size[1]*3/6-15+128*2.4/1.3*0.8)+30, 'y-offset': -2},
             {'x': int(fake_screen_size[0]/4+320-10+128*2.4/1.3*0.8), 'y': int(fake_screen_size[1]*3/6+60-15+128*2.4/1.3*0.8)+30, 'y-offset': 1},
         ]
+        """
+        coordinates = all_coordinates[0]
         nb_poke = 3
     else:
         print("ohh ! 2 playwerrs")
+        """
         coordinates = [
             {'x': int(fake_screen_size[0]/4-10+128*2.4/1.3*0.8), 'y': int(fake_screen_size[1]*3/6+3-15+20+128*2.4/1.3*0.8)+30, 'y-offset': 1},
             {'x': fake_screen_size[0]/4+180-10+128*2.4/1.3*0.8, 'y': int(fake_screen_size[1]*3/6-15+128*2.4/1.3*0.8)+30, 'y-offset': -2},
             {'x': int(fake_screen_size[0]/4+300+128*2.4/1.3*0.8), 'y': int(fake_screen_size[1]*3/6+3-15+20+128*2.4/1.3*0.8)+30, 'y-offset': 1},
             {'x': int(fake_screen_size[0]/4+350-10+128*2.4/1.3*0.8), 'y': int(fake_screen_size[1]*3/6+60-15+128*2.4/1.3*0.8)+30, 'y-offset': 1},
         ]
+        """
+        coordinates = all_coordinates[1]
         nb_poke = 2
     return coordinates, nb_poke
 
@@ -87,7 +111,7 @@ def player_initiation_client(server, my_poke, trainer_id, screen_size):
     local_map = []
     
     for poke in range(len(my_poke)):
-        local_map.append({'name':my_poke[poke].name+'-b','player':trainer_id, 'hp':'130,130'})
+        local_map.append({'name':my_poke[poke].name+'-b','player':trainer_id, 'hp':{'current': 60, 'full': 130},'atks':my_poke[poke].atks})
     return local_map
 
 
@@ -95,9 +119,16 @@ def player_initiation_client(server, my_poke, trainer_id, screen_size):
 
 
 def client_attack(current_player_index, data, map, oponent, player_names):
+    global current_turn_order_already_attacked
+    if current_turn_order_already_attacked:
+        return
+    current_turn_order_already_attacked = 1
     for a in data:
+        atk_name = map[map[0]['data'][0]]["atks"][a["selected_move"] - 1]
         
-        atk_name, creature_index = a["move_name"], a["creature_index"]
+        #atk_name = a["move_name"]
+        #creature_index is no longer useful
+        """
         base_creature_index = creature_index
         #tunr_order
         selected_sould_index_in_map = -1
@@ -110,63 +141,104 @@ def client_attack(current_player_index, data, map, oponent, player_names):
         # check
         
         if map[0]["data"][0] != selected_sould_index_in_map:
-            
-            return
+            return 
+        old code to check if selected creature is right
+        """ 
         
+        #I have to find the creature_index of the current selected creature to be able to find the coordinates
+        creature_index = 1
+        for soul in range(len(map)):
+            if map[soul].get("player")==player_names[current_player_index]:
+                print(map[0]["data"][0], soul)
+                if map[0]["data"][0] == soul:
+                    break
+                creature_index+=1
+                
         
         print("launching attack")
         start_coordinates,_a = find_coordinates_for_player_initiation_server(len(map[1]["players_ids"]))
-        start_coordinates = start_coordinates[base_creature_index-1+current_player_index*2]
+        start_coordinates = start_coordinates[creature_index-1+current_player_index*2]
 
         fake_screen_size = (1250*0.8,680*0.8) 
-        end_coordinates = {'x': fake_screen_size[0]*10/11+50, 'y': fake_screen_size[1]*5/9}
+        end_coordinates = {'x': fake_screen_size[0]*10/11+80, 'y': fake_screen_size[1]*5/9}
 
         if atk_name.startswith("dash_"):
             start_coordinates = {"x": start_coordinates["x"], "y": start_coordinates["y"]}
-            _thread.start_new_thread(attack_animation, (map, map[map[0]["data"][0]], end_coordinates, start_coordinates, atk_name))
+            _thread.start_new_thread(dash_attack_animation, (map, map[map[0]["data"][0]], end_coordinates, start_coordinates, atk_name))
             
 
             
         else:
             start_coordinates = {"x": start_coordinates["x"]-30, "y": start_coordinates["y"]-30}
-            map.append({'name': atk_name, 'position': start_coordinates, 'destination': end_coordinates, 'arrival_time': 1, 'starting_time': int(time.time()*10)/10, 'explosion_time': 0.5})
 
-        del map[0]["data"][0] # turn order
+            _thread.start_new_thread(attack_animation, (map, atk_name, start_coordinates, end_coordinates))
         
         #_compute_turn_order(map)
                 
 
-def attack_animation(map, attacker, end_coordinates, start_coordinates, atk_name):
+def dash_attack_animation(map, attacker, end_coordinates, start_coordinates, atk_name):
+    time.sleep(1)
+    global current_turn_order_already_attacked
     # dash
     print("starting attack animation")
     print(attacker)
 
     true_destination = {"x": end_coordinates["x"]-10, "y": end_coordinates["y"]+20} 
 
-    attacker['destination']= true_destination
-    attacker['arrival_time'] = 0.5
+    
+    attacker['arrival_time'] = 0.8
+    print("starting at", time.time())
     attacker['starting_time'] = int(time.time()*10)/10
+    attacker['destination']= true_destination
 
     if start_coordinates["y"] > end_coordinates["y"] :
         attacker['zoom'] = 0.8
     else:
         attacker['zoom'] = 1.2
 
-    time.sleep(0.5)
+    time.sleep(1)
     # explosion
+    map_index = len(map)
     map.append({'name': atk_name, 'position': start_coordinates, 'destination': {"x": end_coordinates["x"]+40, "y": end_coordinates["y"]+10}, 'arrival_time': 0.1, 'starting_time': int(time.time()*10)/10, 'explosion_time': 0.7})
 
     time.sleep(0.2)
     # going back
     attacker['position'] = true_destination
     attacker['destination']= start_coordinates
-    attacker['arrival_time'] = 0.5
+    attacker['arrival_time'] = 0.6
     del attacker['zoom']
     attacker['starting_time'] = int(time.time()*10)/10
 
+    time.sleep(1.5)
+    current_turn_order_already_attacked = 0
+    del map[0]["data"][0]
+    attacker['position'] = start_coordinates
+    print("deleting projectile")
+    del map[map_index] # index of projectile
+
+def attack_animation(map, atk_name, start_coordinates, end_coordinates):
+    time.sleep(1)
+    time.sleep(1)
+    global current_turn_order_already_attacked
+    map_index = len(map)
+    map.append({'name': atk_name, 'position': start_coordinates, 'destination': end_coordinates, 'arrival_time': 1, 'starting_time': int(time.time()*10)/10, 'explosion_time': 0.5})
+    #map.append({'name': atk_name, 'position': end_coordinates, 'destination': end_coordinates, 'arrival_time': 0.2, 'starting_time': int(time.time()*10)/10, 'explosion_time': 5})
+    
+    time.sleep(1.5)
+    current_turn_order_already_attacked = 0
+
+    del map[0]["data"][0] # turn order
+    print("deleting projectile")
+    del map[map_index] # index of projectile
 
 
+
+current_turn_order_already_attacked = 0
 def ennemy_attack(map, opponent_index): # called only if ennemy is in first
+    global current_turn_order_already_attacked
+    if current_turn_order_already_attacked:
+        return
+    current_turn_order_already_attacked = 1
     print("called")
     fake_screen_size = (1250*0.8,680*0.8) 
     start_coordinates = {'x': fake_screen_size[0]*10/11+50, 'y': fake_screen_size[1]*5/9}
@@ -174,19 +246,19 @@ def ennemy_attack(map, opponent_index): # called only if ennemy is in first
 
     end_coordinates,_a = find_coordinates_for_player_initiation_server(len(map[1]["players_ids"]))
     end_coordinates = end_coordinates[target]
-    end_coordinates = {"x": end_coordinates["x"]-30, "y": end_coordinates["y"]-30}
+    end_coordinates = {"x": end_coordinates["x"]-10, "y": end_coordinates["y"]-30}
 
     atk_name = random.choice(map[opponent_index]["atks"])
     
     if atk_name.startswith("dash_"):
-        map.append({'name': atk_name, 'position': start_coordinates, 'destination': {"x": end_coordinates["x"]+40, "y": end_coordinates["y"]+10}, 'arrival_time': 0.1, 'starting_time': int(time.time()*10)/10, 'explosion_time': 0.5})
-        _thread.start_new_thread(attack_animation, (map, map[opponent_index], end_coordinates, start_coordinates, atk_name))
+        #map.append({'name': atk_name, 'position': start_coordinates, 'destination': {"x": end_coordinates["x"]+40, "y": end_coordinates["y"]+10}, 'arrival_time': 0.1, 'starting_time': int(time.time()*10)/10, 'explosion_time': 0.5})
+        _thread.start_new_thread(dash_attack_animation, (map, map[opponent_index], end_coordinates, start_coordinates, atk_name))
  
     else:
         
-        map.append({'name': atk_name, 'position': start_coordinates, 'destination': end_coordinates, 'arrival_time': 1, 'starting_time': int(time.time()*10)/10, 'explosion_time': 0.5})
-
-    del map[0]["data"][0]
+        
+        _thread.start_new_thread(attack_animation, (map, atk_name, start_coordinates, end_coordinates))
+        
     
 
 
