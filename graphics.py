@@ -248,7 +248,7 @@ def draw(win, screen_size, map, my_trainer_id):
     for current_player in range(len(map[1]['players_ids'])):
         image = images_list["trainer_"+map[1]['players_ids'][current_player]]
         image2 = image.copy()
-        positions = [trainer_position[:], (trainer_position[0]*2.5, trainer_position[1]+252-image2.get_size()[1])]
+        positions = [trainer_position[:], (trainer_position[0]*2.5, trainer_position[1]+252-image2.get_size()[1]-20)]
         if map[1]['players_ids'][current_player] != my_trainer_id:
             image2.fill((255, 255, 255, 150), None, pygame.BLEND_RGBA_MULT)
             
