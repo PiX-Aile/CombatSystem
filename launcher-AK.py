@@ -9,6 +9,15 @@ pygame.display.set_caption("Game")
 pygame.init()
 pygame.font.init()
 
+
+pygame.mixer.music.load("Musics/Boss1-SoulWeaver.mp3")
+
+# Setting the volume
+pygame.mixer.music.set_volume(0.7)
+
+# Start playing the song
+pygame.mixer.music.play(loops=-1)
+
 path_images=os.path.join(os.getcwd(),"Images")
 
 
