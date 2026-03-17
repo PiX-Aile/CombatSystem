@@ -147,7 +147,7 @@ def client_attack(current_player_index, data, map, oponent, player_names):
                 
 
 def dash_attack_animation(map, attacker, end_coordinates, start_coordinates, atk_name, target):
-    time.sleep(1)
+    time.sleep(0.5)
     global current_turn_order_already_attacked
     # dash
     print("starting attack animation")
@@ -192,7 +192,6 @@ def dash_attack_animation(map, attacker, end_coordinates, start_coordinates, atk
     del map[map_index] # index of projectile
 
 def attack_animation(map, atk_name, start_coordinates, end_coordinates, target):
-    time.sleep(1)
     time.sleep(1)
     global current_turn_order_already_attacked
     map_index = len(map)

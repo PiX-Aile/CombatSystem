@@ -287,7 +287,7 @@ def draw(win, screen_size, map, my_trainer_id):
 
 
 waiting_time = 20
-animation_duration = 15
+animation_duration = 13
 zoom_delay = 0
 
 most_zoomed = 2

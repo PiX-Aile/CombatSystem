@@ -32,7 +32,7 @@ import random
 
 
 my_poke = [Pokemon("A"), Pokemon("B"), Pokemon("A")]
-my_poke[0].atks = ["Psy", "Fire_Spell", "Plasma_Spell"]
+my_poke[0].atks = ["Multi_Piplup", "Fire_Spell", "Plasma_Spell"]
 my_poke[1].atks = ["Elec_Spell", "Plasma_Spell", "Fire_Spell"]
 my_poke[2].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
 
