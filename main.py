@@ -10,7 +10,7 @@ import graphics
 
 def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponent):
 
-    has_already_attacked = ["yes"] # for animations, just after choosing attack, pokemon is still in turn order, but it has to dezoom to show attack
+    has_already_attacked = [] # for animations, just after choosing attack, pokemon is still in turn order, but it has to dezoom to show attack
     # is equal to yes at first to that at the very beginning it zoomes right
 
     def load_map(server, data_to_send, map, has_already_attacked):
@@ -35,6 +35,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
 
     time.sleep(0.5)
     multiplayer.player_initiation_client(server, my_poke, trainer_id, screen_size)
+
     
     graphics.load(path_images)
 
@@ -46,10 +47,11 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
     old_time = time.time()
     selected_creature = 0 # no selected
     data_to_send = []
+
+
     while 1:
 
         keys = pygame.key.get_pressed()
-
         graphics.visual_animations(keys, screen_size, win, map, trainer_id, server, clock, has_already_attacked)
         graphics.draw(win, screen_size, map, trainer_id)
 

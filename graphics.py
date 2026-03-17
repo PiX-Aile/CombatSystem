@@ -298,19 +298,20 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
     global _global_zoom, _global_zoom_point, trainer_position, zoom_delay
     
 
-    if _global_zoom_point==None:
-        _global_zoom_point= [0,-70]
-        trainer_position = super_loin_trainer_position[:]
-        _global_zoom =0
-        return 0 # no selection
+    
+        
     
     if inputs[pygame.K_LSHIFT]:
         return -1
 
     if zoom_delay>=0:
         zoom_delay -=1
-
-    if _global_zoom!=1 and (has_already_attacked) and zoom_delay<0: # (map[map[0]["data"][0]].get("player") != my_trainer_id or has_already_attacked)
+    
+    if _global_zoom_point==None or (_global_zoom!=1 and has_already_attacked  and zoom_delay<0): # (map[map[0]["data"][0]].get("player") != my_trainer_id or has_already_attacked)
+        if _global_zoom_point==None:
+            _global_zoom_point= [0,-70]
+            trainer_position = super_loin_trainer_position[:]
+            _global_zoom =0
         _old_point = _global_zoom_point[:]
         _old_zoom = _global_zoom
         _old_trainer_position = trainer_position[:]
@@ -348,7 +349,11 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
             clock.tick(80)
 
         _global_zoom=1
+
+        if _global_zoom_point==None:
+            return 0
     
+
     if _global_zoom==1 and map[map[0]["data"][0]].get("player") == my_trainer_id and (not has_already_attacked)  and zoom_delay<0:
 
         zoom_delay = waiting_time

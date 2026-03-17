@@ -18,7 +18,7 @@ def init_map(opponent): #server
     fake_screen_size = (1250*0.8,680*0.8) 
     #_opponent_coordinates = {'x': fake_screen_size[0]*10/11+50, 'y': fake_screen_size[1]*5/9, 'y-offset':0}
     _opponent_coordinates = oponent_coordinates
-    map.append({'name':opponent.name+'-f','player':'opponent','position':_opponent_coordinates, 'hp':{'current': 180, 'full': 200},'atks':opponent.atks})
+    map.append({'name':opponent.name+'-f','player':'opponent','position':_opponent_coordinates, 'hp':{'current': 360, 'full': 400},'atks':opponent.atks})
 
     return map
 
@@ -36,11 +36,14 @@ def _compute_turn_order(map):
             continue
         if not map[index].get('player'): # projectile
             continue
-        if not( map[index]['name'].startswith("_")):
+        if not( map[index]['name'].startswith("_")) and not map[index]["player"] == 'opponent':
             possible_elements.append(index)
     
-    for i in range(2):
+    for i in range(9):
         new_order.extend(possible_elements)
+        new_order.append(2)
+        new_order.append(2)
+    
         
             
     map[turn_order_index]['data'] = new_order
@@ -152,7 +155,8 @@ def dash_attack_animation(map, attacker, end_coordinates, start_coordinates, atk
 
     true_destination = {"x": end_coordinates["x"]-10, "y": end_coordinates["y"]+20} 
 
-    
+    if attacker.get("destination"):
+        attacker['position'] = attacker.get("destination")
     attacker['arrival_time'] = 0.8
     print("starting at", time.time())
     attacker['starting_time'] = int(time.time()*10)/10

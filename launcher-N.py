@@ -22,8 +22,8 @@ import time
 import random
 
 my_poke = [Pokemon("Pumpkid"), Pokemon("Pumpkid"), Pokemon("Pumpkid")]
-my_poke[0].atks = ["dash_Fire", "dash_Sword", "dash_Sword"]
-my_poke[1].atks = ["dash_Sword", "Fire_Spell", "Fire_Spell"]
+my_poke[0].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
+my_poke[1].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
 my_poke[2].atks = ["Elec_Spell", "Plasma_Spell", "Piplup"]
 
 opponent = Pokemon("Samourai")
