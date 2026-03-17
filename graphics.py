@@ -287,7 +287,7 @@ def draw(win, screen_size, map, my_trainer_id):
 
 
 waiting_time = 20
-animation_duration = 13
+animation_duration = 15
 zoom_delay = 0
 
 most_zoomed = 2
@@ -295,7 +295,7 @@ most_zoomed = 2
 super_loin_trainer_position = [-200, 400]
 
 def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, clock, has_already_attacked):
-    global _global_zoom, _global_zoom_point, trainer_position, zoom_delay
+    global _global_zoom, _global_zoom_point, trainer_position, zoom_delay, animation_duration
     
 
     
@@ -350,9 +350,6 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
 
         _global_zoom=1
 
-        if _global_zoom_point==None:
-            return 0
-    
 
     if _global_zoom==1 and map[map[0]["data"][0]].get("player") == my_trainer_id and (not has_already_attacked)  and zoom_delay<0:
 
