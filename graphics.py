@@ -38,7 +38,11 @@ def load(path_images):
 
 
             elif "trainer_" in name : # if trainer
-                image=pygame.transform.rotozoom(image, 0, 3.5)
+                if "N" in name:
+                    image=pygame.transform.rotozoom(image, 0, 3)
+                else:
+                    image=pygame.transform.rotozoom(image, 0, 3.5)
+                print(image.get_size()[1])
 
             elif name == "hp-full.png" or name=="hp-empty.png": 
                  image=pygame.transform.rotozoom(image, 0, 1.7)
@@ -240,10 +244,11 @@ def draw(win, screen_size, map, my_trainer_id):
         
 
     # ui
-    positions = [trainer_position[:], (trainer_position[0]*2.2, trainer_position[1])]
+    
     for current_player in range(len(map[1]['players_ids'])):
         image = images_list["trainer_"+map[1]['players_ids'][current_player]]
         image2 = image.copy()
+        positions = [trainer_position[:], (trainer_position[0]*2.5, trainer_position[1]+252-image2.get_size()[1])]
         if map[1]['players_ids'][current_player] != my_trainer_id:
             image2.fill((255, 255, 255, 150), None, pygame.BLEND_RGBA_MULT)
             
