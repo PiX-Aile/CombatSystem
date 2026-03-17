@@ -33,7 +33,7 @@ import random
 my_poke = [Pokemon("Pumpkid"), Pokemon("Pumpkid"), Pokemon("Pumpkid")]
 my_poke[0].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
 my_poke[1].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
-my_poke[2].atks = ["Elec_Spell", "Plasma_Spell", "Piplup"]
+my_poke[2].atks = ["Elec_Spell", "Plasma", "Piplup"]
 
 opponent = Pokemon("Samourai")
 opponent.atks = ["dash_Fire"]
