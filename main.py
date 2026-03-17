@@ -67,9 +67,6 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
             current_time = time.time()
             start_new_thread(load_map, (server,data_to_send, map, has_already_attacked))
             data_to_send = []
-            #map = multiplayer.load_info(server, data_to_send)
-            #data_to_send = []
-            #print("time loading: ", time.time()-current_time)
             
         
         a = time.time()

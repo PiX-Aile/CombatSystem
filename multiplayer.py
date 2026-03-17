@@ -19,7 +19,9 @@ def multiplayer(battle_id, opponent): #main.py
         current_index = 0
         empty_port_port = 8000;
         empty_addr_global, empty_port_global = None, None 
-        for server in f.readlines():
+        liste = f.readlines()
+
+        for server in liste:
             server_addr, server_port = server.split(", ")
             
             try:
@@ -54,15 +56,18 @@ def connect(server_addr, server_port, battle_id):
     s.connect((server_addr, server_port))
 
     # client 
-    if (pickle.loads(s.recv(10000))==battle_id):
-        print("Client successfully connected at server and port: ", server_addr, server_port)
-        s.send(pickle.dumps(1))
-        return s
+    try:
+        if (pickle.loads(s.recv(10000))==battle_id):
+            print("Client successfully connected at server and port: ", server_addr, server_port)
+            s.send(pickle.dumps(1))
+            return s
 
-    else:
-        print("Server found but not same battle, trying with port+1")
-        s.send(pickle.dumps(0))
-        
+        else:
+            print("Server found but not same battle, trying with port+1")
+            s.send(pickle.dumps(0))
+            
+            return 0
+    except:
         return 0
 
 
@@ -101,6 +106,7 @@ def server(oponent):#server
                     if el.get("player"): # not a projectile:
                         print("destination no longer needed for :", el['name'])
                         del el['destination']
+                    
                         
 
                         
@@ -108,7 +114,7 @@ def server(oponent):#server
             
             
             # ennemy attack ?
-            if map[map[0]["data"][0]]["player"] == "opponent":
+            if len(map[0]["data"])>0 and map[map[0]["data"][0]]["player"] == "opponent":
                 #game_logics.ennemy_attack(map, oponent)
                 game_logics.ennemy_attack(map, map[0]["data"][0])
             

@@ -11,7 +11,7 @@ _global_zoom = 1 # set at the beginning of loop
 _global_zoom_point = None
 trainer_position = None
 
-font_atk = pygame.font.Font('./Fonts/a.ttf', 18)
+font_atk = pygame.font.Font('./Fonts/a.ttf', 15)
 
 images_list = {}
 
@@ -38,10 +38,11 @@ def load(path_images):
 
 
             elif "trainer_" in name : # if trainer
-                image=pygame.transform.rotozoom(image, 0, 3)
+                image=pygame.transform.rotozoom(image, 0, 3.5)
 
             elif name == "hp-full.png" or name=="hp-empty.png": 
-                 image=pygame.transform.rotozoom(image, 0, 0.8)
+                 image=pygame.transform.rotozoom(image, 0, 1.7)
+                 image.fill((255, 255, 255, 150), None, pygame.BLEND_RGBA_MULT)
             elif name == "ennemy-hp-full.png" or name=="ennemy-hp-empty.png": 
                  image=pygame.transform.rotozoom(image, 0, 2)
             
@@ -75,8 +76,10 @@ def load(path_images):
             image = pygame.image.load(os.path.join(path_images, "Animations", name)) # loads the image  
     
             image = pygame.transform.rotozoom(image, 0, 1.5*800/image.get_size()[0])
-            if "Piplup" in name:
-                image = pygame.transform.rotozoom(image, 0, 0.2)
+            if "banner" in name:
+                image = pygame.transform.rotozoom(image, 0, 0.7)
+            if "Piplup" in name or "tkt" in name:
+                image = pygame.transform.rotozoom(image, 0, 0.15)
             image_size = image.get_size()
             for y in range(y_):
                 for x in range(x_): 
@@ -88,10 +91,19 @@ def load(path_images):
                         coordinates[1]-=20
                     images_list[name.split("-")[0]+"_"+str(counter)] = image.subsurface(coordinates)
                     counter +=1 
+        elif not ("." in name):
+            counter = 0
+            for file in os.listdir(os.path.join(path_images, "Animations", name)):
+                image = pygame.image.load(os.path.join(path_images, "Animations", name, file)) # loads the image  
+                image = pygame.transform.rotozoom(image, 0, 2)
+                images_list[file.replace("-", "_").split(".")[0]] = image
+                counter+=1
 
 
 
+banner_counter = 0
 def draw(win, screen_size, map, my_trainer_id):
+    global banner_counter
 
     win.fill((0,0,0))
     if _global_zoom!=1: image=pygame.transform.rotozoom(images_list["background"], 0,_global_zoom) 
@@ -128,8 +140,8 @@ def draw(win, screen_size, map, my_trainer_id):
                         background_image = images_list["oponent_turn"].copy()
                         #background_image = images_list["oponent_turn"].copy()
                         
-                    win.blit(background_image, (0 if count>0 else 20,(count)*70))
-                    win.blit(icon_image, (creature_icon_margin[0]+(-20 if count>0 else 0), (count)*70+creature_icon_margin[1]))                        
+                    win.blit(background_image, (-30 if count>0 else 0,(count)*70))
+                    win.blit(icon_image, (creature_icon_margin[0]+(-50 if count>0 else -20), (count)*70+creature_icon_margin[1]))                        
 
                     count += 1
 
@@ -199,7 +211,8 @@ def draw(win, screen_size, map, my_trainer_id):
             image=pygame.transform.rotozoom(image, 0, element.get("zoom"))
         
 
-        coordinates = (x_position-image.get_size()[0] + _global_zoom_point[0]+(_global_zoom_point[0]+x_position-screen_size[0]/2)*(_global_zoom-1),offset+ y_position-image.get_size()[1]+ _global_zoom_point[1]+(_global_zoom_point[1]+y_position-screen_size[1]/2)*(_global_zoom-1))
+        base_coordinates = [x_position-image.get_size()[0] + _global_zoom_point[0]+(_global_zoom_point[0]+x_position-screen_size[0]/2)*(_global_zoom-1),y_position-image.get_size()[1]+ _global_zoom_point[1]+(_global_zoom_point[1]+y_position-screen_size[1]/2)*(_global_zoom-1)]
+        coordinates = base_coordinates[:];coordinates[1]+=offset
         win.blit(image, coordinates)
 
         # ui of hps :
@@ -207,20 +220,21 @@ def draw(win, screen_size, map, my_trainer_id):
             
 
             if element["player"] == 'opponent':
-                coordinates = (280,-230)
+                base_coordinates = (280,-230)
                 empty_image = images_list["ennemy-hp-empty"]
                 full_image = images_list["ennemy-hp-full"]
 
             else:
-                coordinates = (coordinates[0]-10, coordinates[1]-97)
+                base_coordinates[0]+=30
+                base_coordinates[1]+=30
                 empty_image = images_list["hp-empty"]
                 full_image = images_list["hp-full"]
 
             full_image = full_image.subsurface((0,0,full_image.get_size()[0]*element['hp']['current']/element['hp']['full'], full_image.get_size()[1]))
             
             
-            win.blit(full_image, coordinates)
-            win.blit(empty_image,  coordinates)
+            win.blit(full_image, base_coordinates)
+            win.blit(empty_image,  base_coordinates)
                 
 
         
@@ -236,11 +250,30 @@ def draw(win, screen_size, map, my_trainer_id):
                     
         win.blit(image2, positions[current_player])
     # battle ui
-    if _global_zoom==most_zoomed:
+    banner_counter+=0.4
+    if _global_zoom>1:
         current_poke = map[map[0]["data"][0]]
         for i in range(0, len(current_poke["atks"])):
-            text_co = (screen_size[0]*3/5, screen_size[1]*2/5+30*i)
-            win.blit(font_atk.render(f'{i+1} : {current_poke["atks"][i].replace("_", " ")}', True, (255,255,255)), text_co)
+            text_co = (screen_size[0]*3/5, screen_size[1]*1/5+136*i +20)
+            liste_co = [(screen_size[0]*2/5-70, -170+140*i +20),
+                        (screen_size[0]*2/5, -170+140*i +70+20),
+                        (screen_size[0]*2/5-78, -170+140*i +20),
+                        ]
+            img_co = liste_co[i]
+            image = images_list[f"Banner_{(int(banner_counter)+3*i)%9+1}"]
+
+            image = pygame.transform.rotozoom(image, 20-20*i, 1)#1-1*(most_zoomed-_global_zoom))
+
+            fill_value = 250-1000*(most_zoomed-_global_zoom)
+            if fill_value<0:fill_value=0
+            image.fill((255, 255, 255, fill_value), None, pygame.BLEND_RGBA_MULT)
+
+            win.blit(image, img_co)
+
+            if _global_zoom==most_zoomed:
+                text = font_atk.render(f'{i+1} : {current_poke["atks"][i].replace("_", " ").replace("dash", "")}', True, (255,255,255))
+                text = pygame.transform.rotozoom(text, 20-20*i, 1)
+                win.blit(text, text_co)
 
 
     """
