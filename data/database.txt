@@ -1,0 +1,34 @@
+{
+    
+    "Pumpkid" : {
+        
+        "HP": 50,
+        "attack" : 50,
+        "velocity" : 50,
+        "defense" : 50
+    },
+    "Bushidow":{
+        "HP": 50,
+        "attack" : 70,
+        "velocity" : 80,
+        "defense" : 50
+    },
+    "Minishrum":{
+        "HP": 50,
+        "attack" : 40,
+        "velocity" : 55,
+        "defense" : 60
+    },
+    "A":{
+        "HP": 70,
+        "attack" : 45,
+        "velocity" : 60,
+        "defense" : 60
+    },
+    "B" : {
+        "HP": 60,
+        "attack" : 65,
+        "velocity" : 55,
+        "defense" : 70
+    }
+}
