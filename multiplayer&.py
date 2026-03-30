@@ -6,7 +6,7 @@ from _thread import *
 
 import game_logics
 
-max_player_nb = 3
+max_player_nb = 2
 
 socket.timeout(4000)
 
@@ -17,11 +17,9 @@ def multiplayer(battle_id, opponent): #main.py
     with open("server_list.txt", "r") as f:
         empty_port_found = 0
         current_index = 0
-        empty_port_port = 8001
+        empty_port_port = 8000;
         empty_addr_global, empty_port_global = None, None 
-        liste = f.readlines()
-
-        for server in liste:
+        for server in f.readlines():
             server_addr, server_port = server.split(", ")
             
             try:
@@ -56,18 +54,15 @@ def connect(server_addr, server_port, battle_id):
     s.connect((server_addr, server_port))
 
     # client 
-    try:
-        if (pickle.loads(s.recv(10000))==battle_id):
-            print("Client successfully connected at server and port: ", server_addr, server_port)
-            s.send(pickle.dumps(1))
-            return s
+    if (pickle.loads(s.recv(10000))==battle_id):
+        print("Client successfully connected at server and port: ", server_addr, server_port)
+        s.send(pickle.dumps(1))
+        return s
 
-        else:
-            print("Server found but not same battle, trying with port+1")
-            s.send(pickle.dumps(0))
-            
-            return 0
-    except:
+    else:
+        print("Server found but not same battle, trying with port+1")
+        s.send(pickle.dumps(0))
+        
         return 0
 
 
@@ -90,7 +85,7 @@ def server(oponent):#server
         if (timea)%10==0:#time for cleanup
             current_index = 0
             for el in map:
-                """ #deleting projectiles, now handled in game logics
+                """
                 if not el.get("player") and not el['name'].startswith("_"):# is projectile
                     print("there is a projectile")
                     if el['starting_time']+el['arrival_time']+el['explosion_time']<time.time():
@@ -101,12 +96,12 @@ def server(oponent):#server
                         
                         #game_logics._compute_turn_order(map)
                         current_index -=1
+
                 """
                 if el.get("destination") and int(el['position']['x']) == int(el['destination']['x']) and int(el['position']['y']) == int(el['destination']['y']):
                     if el.get("player"): # not a projectile:
                         print("destination no longer needed for :", el['name'])
                         del el['destination']
-                    
                         
 
                         
@@ -130,7 +125,7 @@ def server(oponent):#server
                     player_names = map[1]["players_ids"]
                     game_logics.client_attack(current_player_index, data, map, oponent, player_names)
                 conn.send(pickle.dumps(map))
-            except (BrokenPipeError, EOFError, ConnectionResetError):
+            except BrokenPipeError:
                 print("Second player disconnected")
                 map[1]['players_ids'].pop(1)
                 liste_connected.pop(1)
@@ -202,7 +197,7 @@ def load_info(server, data_to_send): # client
 
 def player_initiation_server(conn): #server
     print("initialising new plaer")
-    data = pickle.loads(conn.recv(2000))
+    data = pickle.loads(conn.recv(2000)) # serveur bloqué là
 
     map[1]['players_ids'].append(data[0]['player'])
     
@@ -237,4 +232,3 @@ def player_initiation_client(server, my_poke, trainer_id, screen_size): #client
     player_names.append(trainer_id)
     local_map = game_logics.player_initiation_client(server, my_poke, trainer_id, screen_size)
     server.send(pickle.dumps(local_map))
-
