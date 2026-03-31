@@ -17,11 +17,14 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
         
         loaded = multiplayer.load_info(server, data_to_send)
         
+        if not loaded:
+            print("no loaded map...")
+            return
         if loaded != map:
 
             #did the first in torn_order change ?
             if (len(map)>0 and len(map[0].get("data"))>0 and map[0].get("data")[0] != loaded[0].get("data")[0]):
-                while has_already_attacked:
+                while has_already_attacked: # only used for zooms, this means dezoom I think
                     del has_already_attacked[0]
                 print("new turn order !!", loaded[0]["data"][0])
 
@@ -34,6 +37,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
     server = multiplayer.multiplayer(battle_id, opponent) # handles all the connection, and either creates of connects to a server
 
     time.sleep(0.5)
+    print("server:",server)
     multiplayer.player_initiation_client(server, my_poke, trainer_id, screen_size)
 
     
@@ -65,7 +69,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
                 has_already_attacked.append("yess")
                 data_to_send.append({'selected_move':selected_move})
 
-        if (frame_nb%10==0):
+        if (frame_nb%20==0):
             current_time = time.time()
             start_new_thread(load_map, (server,data_to_send, map, has_already_attacked))
             data_to_send = []

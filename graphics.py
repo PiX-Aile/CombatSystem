@@ -246,6 +246,7 @@ def draw(win, screen_size, map, my_trainer_id):
     # ui
     
     for current_player in range(len(map[1]['players_ids'])):
+        print(images_list)
         image = images_list["trainer_"+map[1]['players_ids'][current_player]]
         image2 = image.copy()
         positions = [trainer_position[:], (trainer_position[0]*2.5, trainer_position[1]+252-image2.get_size()[1]-20)]

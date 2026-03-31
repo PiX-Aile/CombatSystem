@@ -6,6 +6,9 @@ must_compute_turn_order = False
 
 oponent_coordinates = {'x': 940,'y':290, 'y-offset':0}
 
+
+
+"""
 def init_map(opponent): #server
 
 
@@ -21,7 +24,7 @@ def init_map(opponent): #server
     map.append({'name':opponent.name+'-f','player':'opponent','position':_opponent_coordinates, 'hp':{'current': 360, 'full': 400},'atks':opponent.atks})
 
     return map
-
+"""
 
 
 def _compute_turn_order(map):
