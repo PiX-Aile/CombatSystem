@@ -9,7 +9,7 @@ def multiplayer(battle_id, opponent): #main.py
     opponent = {'name':opponent.name+'-f','player':'opponent','position':[], 'hp':{'current': 360, 'full': 400},'atks':opponent.atks}
     url = 'http://pixailesoulweaver.pythonanywhere.com/StartBattle/'+battle_id+"/"+str(opponent)
     #url = 'http://127.0.0.1:8000/Send/'+player_name+'/'+str((player.get_pos()[0], player.get_pos()[1], player.direction, int(time.time())))
-    url = 'http://127.0.0.1:8000/StartBattle/'+battle_id+"/"+str(opponent)
+    #url = 'http://127.0.0.1:8000/StartBattle/'+battle_id+"/"+str(opponent)
     print(url)
     try:
         req = requests.get(url, 'html.parser')
@@ -18,8 +18,10 @@ def multiplayer(battle_id, opponent): #main.py
         exit()
 
 
-    
-    my_dict= eval(req.text.replace("&#x27;", "'").replace("&quot;", """ " """))
+    try:
+        my_dict= eval(req.text.replace("&#x27;", "'").replace("&quot;", """ " """))
+    except:
+        print("errrror : ", req.text)
     server = my_dict["url"]
     print("received url !!!", server)
     return server

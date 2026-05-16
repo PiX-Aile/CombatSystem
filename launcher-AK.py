@@ -10,6 +10,7 @@ pygame.init()
 pygame.font.init()
 
 
+
 pygame.mixer.music.load("Musics/Boss1-SoulWeaver.mp3")
 
 # Setting the volume
@@ -32,7 +33,7 @@ import random
 
 
 my_poke = [Pokemon("Squll"), Pokemon("Cleavil"), Pokemon("Squll")]
-my_poke[0].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
+my_poke[0].atks = ["Explosion", "dash_SFire", "dash_Sword"]
 my_poke[1].atks = ["Elec_Spell", "Plasma", "Fire_Spell"]
 my_poke[2].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
 

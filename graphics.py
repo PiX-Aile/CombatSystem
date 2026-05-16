@@ -16,6 +16,7 @@ font_atk = pygame.font.Font('./Fonts/a.ttf', 15)
 
 images_list = {}
 
+
 def load(path_images):
     global images_list
     images_list = {}
@@ -87,7 +88,6 @@ def load(path_images):
             image_size = image.get_size()
             for y in range(y_):
                 for x in range(x_): 
-                    
                     
                     coordinates = [int(image_size[0]/x_*x),int(image_size[1]/y_*y),int(image_size[0]/x_),int(image_size[1]/y_)-20]
                     if coordinates[1]>0:
