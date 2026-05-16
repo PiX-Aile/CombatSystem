@@ -30,13 +30,13 @@ class Pokemon():
 import time
 import random
 
-my_poke = [Pokemon("Pumpkid"), Pokemon("Pumpkid"), Pokemon("Pumpkid")]
+my_poke = [Pokemon("Sasquash"), Pokemon("Sasquash"), Pokemon("Sasquash")]
 my_poke[0].atks = ["dash_Sword", "dash_SFire", "Elec_Spell"]
 my_poke[1].atks = ["dash_Sword", "dash_SFire", "Elec_Spell"]
 my_poke[2].atks = ["Elec_Spell", "Plasma", "Piplup"]
 
-opponent = Pokemon("Samourai")
-opponent.atks = ["dash_Fire"]
+opponent = Pokemon("Kracranium")
+opponent.atks = ["Psy", "dash_SFire"]#dash_SFire
 
 #trainer_id = random.choice(["AK", "N"])
 trainer_id = "N" # 'AK' or 'N'

@@ -31,13 +31,13 @@ import time
 import random
 
 
-my_poke = [Pokemon("A"), Pokemon("B"), Pokemon("A")]
+my_poke = [Pokemon("Squll"), Pokemon("Cleavil"), Pokemon("Squll")]
 my_poke[0].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
 my_poke[1].atks = ["Elec_Spell", "Plasma", "Fire_Spell"]
 my_poke[2].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
 
-opponent = Pokemon("Samourai")
-opponent.atks = ["Psy", "dash_SFire"]
+opponent = Pokemon("Kracranium")
+opponent.atks = ["Psy"]#dash_SFire
 
 #trainer_id = random.choice(["AK", "N"])
 trainer_id = "AK" # 'AK' or 'N'
@@ -45,5 +45,5 @@ trainer_id = "AK" # 'AK' or 'N'
 battle_id = "1"
 
 import main
-main.fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponent)
+print("outpout : ", main.fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponent))
 

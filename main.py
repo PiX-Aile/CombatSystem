@@ -13,7 +13,9 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
     has_already_attacked = [] # for animations, just after choosing attack, pokemon is still in turn order, but it has to dezoom to show attack
     # is equal to yes at first to that at the very beginning it zoomes right
 
+
     def load_map(server, data_to_send, map, has_already_attacked):
+
         
         loaded = multiplayer.load_info(server, data_to_send)
         
@@ -21,6 +23,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
             print("no loaded map...")
             return
         if loaded != map:
+
 
             #did the first in torn_order change ?
             if (len(map)>0 and len(map[0].get("data"))>0 and map[0].get("data")[0] != loaded[0].get("data")[0]):
@@ -56,6 +59,14 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
     while 1:
 
         keys = pygame.key.get_pressed()
+
+        if len(map)>2 and map[2]['hp']['current']<=0:
+            return graphics.end(win, screen_size, map, trainer_id, clock, "win-")
+        if len(map)<0:
+            return graphics.end(win, screen_size, map, trainer_id, clock, "lost")
+
+
+        
         graphics.visual_animations(keys, screen_size, win, map, trainer_id, server, clock, has_already_attacked)
         graphics.draw(win, screen_size, map, trainer_id)
 
@@ -69,7 +80,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
                 has_already_attacked.append("yess")
                 data_to_send.append({'selected_move':selected_move})
 
-        if (frame_nb%20==0):
+        if (frame_nb%15==0):
             current_time = time.time()
             start_new_thread(load_map, (server,data_to_send, map, has_already_attacked))
             data_to_send = []

@@ -4,6 +4,7 @@ import random
 import multiplayer
 import os
 
+
 from game_logics import all_coordinates
 
 
@@ -42,7 +43,6 @@ def load(path_images):
                     image=pygame.transform.rotozoom(image, 0, 3)
                 else:
                     image=pygame.transform.rotozoom(image, 0, 3.5)
-                print(image.get_size()[1])
 
             elif name == "hp-full.png" or name=="hp-empty.png": 
                  image=pygame.transform.rotozoom(image, 0, 1.7)
@@ -88,7 +88,6 @@ def load(path_images):
             for y in range(y_):
                 for x in range(x_): 
                     
-                    #image.fill((255, 255, 255, 30), None, pygame.BLEND_RGBA_MULT) # darken
                     
                     coordinates = [int(image_size[0]/x_*x),int(image_size[1]/y_*y),int(image_size[0]/x_),int(image_size[1]/y_)-20]
                     if coordinates[1]>0:
@@ -106,7 +105,7 @@ def load(path_images):
 
 
 banner_counter = 0
-def draw(win, screen_size, map, my_trainer_id):
+def draw(win, screen_size, map, my_trainer_id, this_is_the_end=0):
     global banner_counter
 
     win.fill((0,0,0))
@@ -200,7 +199,7 @@ def draw(win, screen_size, map, my_trainer_id):
             
             # old code to reduce opacity of not selected
             if ((element.get('player')!=my_trainer_id) or element!=map[map[0]["data"][0]]) :
-                if _global_zoom>=1: # to ignore animation of start
+                if _global_zoom>=1 and not this_is_the_end: # to ignore animation of start
                     image.fill((255, 255, 255, 100 + 150 *(most_zoomed-_global_zoom) ), None, pygame.BLEND_RGBA_MULT)
             
 
@@ -213,6 +212,15 @@ def draw(win, screen_size, map, my_trainer_id):
 
         if element.get("zoom") :# zoom pendant le dash
             image=pygame.transform.rotozoom(image, 0, element.get("zoom"))
+
+        
+        if element.get("hp") and element["hp"]['current']<=0 and not (this_is_the_end==2):
+            image = image.copy()
+            image.fill((255, 255, 255, 100), None, pygame.BLEND_RGBA_MULT)
+        elif this_is_the_end==2:
+            image.fill((255, 255, 0, 200), None, pygame.BLEND_RGBA_MULT)
+
+        
         
 
         base_coordinates = [x_position-image.get_size()[0] + _global_zoom_point[0]+(_global_zoom_point[0]+x_position-screen_size[0]/2)*(_global_zoom-1),y_position-image.get_size()[1]+ _global_zoom_point[1]+(_global_zoom_point[1]+y_position-screen_size[1]/2)*(_global_zoom-1)]
@@ -220,7 +228,7 @@ def draw(win, screen_size, map, my_trainer_id):
         win.blit(image, coordinates)
 
         # ui of hps :
-        if element.get("hp") and  _global_zoom ==1 :
+        if element.get("hp") and  _global_zoom ==1  and element["hp"]['current']>=0  and not this_is_the_end:
             
 
             if element["player"] == 'opponent':
@@ -246,7 +254,6 @@ def draw(win, screen_size, map, my_trainer_id):
     # ui
     
     for current_player in range(len(map[1]['players_ids'])):
-        print(images_list)
         image = images_list["trainer_"+map[1]['players_ids'][current_player]]
         image2 = image.copy()
         positions = [trainer_position[:], (trainer_position[0]*2.5, trainer_position[1]+252-image2.get_size()[1]-20)]
@@ -257,7 +264,34 @@ def draw(win, screen_size, map, my_trainer_id):
         win.blit(image2, positions[current_player])
     # battle ui
     banner_counter+=0.4
-    if _global_zoom>1:
+
+    if this_is_the_end==2:
+         
+         for i in range(0, 4):
+            text_co = (screen_size[0]*3/5+90, screen_size[1]*1/5+142*i +5)
+            liste_co = [(screen_size[0]*2/5+20, -170+140*i +10),
+                        (screen_size[0]*2/5+80, -170+140*i +75),
+                        (screen_size[0]*2/5+10, -170+140*i +20),
+                        (-20, 50),
+                        ]
+        
+            text = ["Poke1", "Poke2", "Poke3", "Free"]
+            image = images_list[f"Banner_{(int(banner_counter)+3*i)%9+1}"]
+            image.fill((255, 255, 255, 255 ), None, pygame.BLEND_RGBA_MULT)
+            if i==3:
+                image = pygame.transform.rotozoom(image, -160, 1)#1-1*(most_zoomed-_global_zoom))
+            else:
+                image = pygame.transform.rotozoom(image, 20-20*i, 1)#1-1*(most_zoomed-_global_zoom))
+            win.blit(image, liste_co[i])
+            text = font_atk.render(f'{i+1} : {text[i]}', True, (255,255,255))
+            if i==3:
+                text_co = (screen_size[0]*1/5+86, screen_size[1]*1/5+142*(i-1)-30)
+                text = pygame.transform.rotozoom(text, 20, 1)#1-1*(most_zoomed-_global_zoom))
+            else:
+                text = pygame.transform.rotozoom(text, 20-20*i, 1)
+            win.blit(text, text_co)
+
+    if _global_zoom>1 and not this_is_the_end:
         current_poke = map[map[0]["data"][0]]
         for i in range(0, len(current_poke["atks"])):
             text_co = (screen_size[0]*3/5, screen_size[1]*1/5+136*i +20)
@@ -293,7 +327,7 @@ def draw(win, screen_size, map, my_trainer_id):
 
 
 waiting_time = 20
-animation_duration = 15
+animation_duration = 14
 zoom_delay = 0
 
 most_zoomed = 2
@@ -411,4 +445,107 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
 
 
 
+
+
    
+def end(win, screen_size, map, my_trainer_id, clock, status):
+    global _global_zoom, _global_zoom_point, trainer_position, zoom_delay, animation_duration
+
+    for i in range(30):
+        draw(win, screen_size, map, my_trainer_id)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        clock.tick(30)
+
+    _old_point = _global_zoom_point[:]
+    _old_zoom = _global_zoom
+    _old_trainer_position = trainer_position[:]
+
+    for i in range(animation_duration*2):
+        trainer_position[0]+=(super_loin_trainer_position[0]-_old_trainer_position[0])/animation_duration
+        trainer_position[1]+=(super_loin_trainer_position[1]-_old_trainer_position[1])/animation_duration
+        draw(win, screen_size, map, my_trainer_id)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        clock.tick(80)
+        
+    destination =(-430,90)
+
+    for i in range(animation_duration):
+
+        _global_zoom_point[0]+=(destination[0]-_old_point[0])/animation_duration
+        _global_zoom_point[1]+=(destination[1]-_old_point[1])/animation_duration
+        _global_zoom += (2-_old_zoom)/animation_duration
+        draw(win, screen_size, map, my_trainer_id, this_is_the_end = 1)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        
+        clock.tick(80)
+
+    
+    final = status
+
+
+    while final=="win-":
+        keys = pygame.key.get_pressed()
+        print("waiting")
+        if keys[pygame.K_1]:
+            final="win+capture"
+            break
+        elif keys[pygame.K_2]:
+            final="win"
+            break
+        draw(win, screen_size, map, my_trainer_id, this_is_the_end = 2)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        clock.tick(30)
+
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        clock.tick(30)
+            
+
+    for i in range(animation_duration):
+
+        _global_zoom_point[0]+=(_old_point[0]-destination[0])/animation_duration
+        _global_zoom_point[1]+=(_old_point[1]-destination[1])/animation_duration
+        _global_zoom += (_old_zoom-2)/animation_duration
+        draw(win, screen_size, map, my_trainer_id, this_is_the_end = 1)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        
+        clock.tick(80)
+    
+    
+    _old_point = _global_zoom_point[:]
+    _old_zoom = _global_zoom
+    _old_trainer_position = trainer_position[:]
+
+
+        
+    for i in range(animation_duration*2):
+        
+        destination =(0,0)
+
+
+        _global_zoom_point[0]+=(destination[0]-_old_point[0])/animation_duration
+        _global_zoom_point[1]+=(destination[1]-_old_point[1])/animation_duration
+        
+        
+        
+        _global_zoom += (0-_old_zoom)/animation_duration
+        draw(win, screen_size, map, my_trainer_id)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        
+        clock.tick(80)
+    return final

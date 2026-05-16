@@ -9,9 +9,13 @@ def multiplayer(battle_id, opponent): #main.py
     opponent = {'name':opponent.name+'-f','player':'opponent','position':[], 'hp':{'current': 360, 'full': 400},'atks':opponent.atks}
     url = 'http://pixailesoulweaver.pythonanywhere.com/StartBattle/'+battle_id+"/"+str(opponent)
     #url = 'http://127.0.0.1:8000/Send/'+player_name+'/'+str((player.get_pos()[0], player.get_pos()[1], player.direction, int(time.time())))
-
-    
-    req = requests.get(url, 'html.parser')
+    url = 'http://127.0.0.1:8000/StartBattle/'+battle_id+"/"+str(opponent)
+    print(url)
+    try:
+        req = requests.get(url, 'html.parser')
+    except:
+        print("server down")
+        exit()
 
 
     
@@ -39,8 +43,12 @@ def load_info(server, data):
 
     
     req = requests.get(url, 'html.parser')
-    print(url)
-    my_list = eval(req.text.replace("&#x27;", "'").replace("&quot;", """ " """))
+    try:
+        my_list = eval(req.text.replace("&#x27;", "'").replace("&quot;", """ " """))
+    except SyntaxError:
+        print("error !!!", req.text)
+        return
+        
     
     return my_list
 
