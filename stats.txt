@@ -1,7 +1,9 @@
 {
-    'Squll': {'speed': 9},
-    'Cleavil': {'speed': 21},
-    'Kracranium': {'speed': 20},
-    'Sasquash' : {'speed': 40}
+    'Squll': {'speed': 10},
+    'Cleavil': {'speed': 20},
+    'Kracranium': {'speed': 11},
+    'Sasquash' : {'speed': 11},
+    'Shroomagus': {'speed': 14},
+    'Shroomancer': {'speed': 14},
 
 }
