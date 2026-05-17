@@ -103,7 +103,7 @@ def player_initiation_client(server, my_poke, trainer_id, screen_size):
     local_map = []
     
     for poke in range(len(my_poke)):
-        local_map.append({'name':my_poke[poke].name+'-b','player':trainer_id, 'hp':{'current': 130, 'full': 130},'atks':my_poke[poke].atks})
+        local_map.append({'name':my_poke[poke].name+'-b','player':trainer_id, 'hp':{'current': 130, 'full': 130},'atks':my_poke[poke].atks,'stats':my_poke[poke].stats})
     return local_map
 
 

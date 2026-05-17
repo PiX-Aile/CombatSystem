@@ -4,7 +4,7 @@ from _thread import *
 
 import multiplayer
 import graphics
-
+from pprint import pprint
 
 
 
@@ -60,9 +60,16 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
 
         keys = pygame.key.get_pressed()
 
+        if not map:
+            print("no map ???")
+            return "lost"
         if len(map)>2 and map[2]['hp']['current']<=0:
             return graphics.end(win, screen_size, map, trainer_id, clock, "win-")
         if len(map)<0:
+            return graphics.end(win, screen_size, map, trainer_id, clock, "lost")
+        print()
+        pprint([i for i in map if i.get("player") and i['player']!='opponent' and i['hp']['current']>0])
+        if frame_nb%20==0 and map and not [i for i in map if i.get("player") and i['player']!='opponent' and i['hp']['current']>0]:
             return graphics.end(win, screen_size, map, trainer_id, clock, "lost")
 
 
@@ -76,7 +83,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
         if (not data_to_send)  :
             selected_move =  keys[pygame.K_1]*( keys[pygame.K_2]==0)*( keys[pygame.K_3]==0) +2*  keys[pygame.K_2]*( keys[pygame.K_1]==0)*( keys[pygame.K_3]==0) +3* keys[pygame.K_3]*( keys[pygame.K_2]==0)*( keys[pygame.K_1]==0)
             #selected_creature = 0
-            if selected_move:
+            if selected_move and map and map[map[0]['data'][0]]['player']==trainer_id:
                 has_already_attacked.append("yess")
                 data_to_send.append({'selected_move':selected_move})
 

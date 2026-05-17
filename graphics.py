@@ -40,10 +40,9 @@ def load(path_images):
 
 
             elif "trainer_" in name : # if trainer
-                if "N" in name:
-                    image=pygame.transform.rotozoom(image, 0, 3)
-                else:
-                    image=pygame.transform.rotozoom(image, 0, 3.5)
+
+                image=pygame.transform.rotozoom(image, 0, 178/image.get_size()[0])
+                print(image.get_size())
 
             elif name == "hp-full.png" or name=="hp-empty.png": 
                  image=pygame.transform.rotozoom(image, 0, 1.7)
@@ -120,6 +119,8 @@ def draw(win, screen_size, map, my_trainer_id, this_is_the_end=0):
                 count = 0
             
                 for index in element['data']:
+                    if map[index]['hp']['current']<=0:
+                        continue
                     
                     if (count>3):
                         continue
@@ -334,8 +335,10 @@ most_zoomed = 2
 
 super_loin_trainer_position = [-200, 400]
 
+old_poke_centered = None
+
 def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, clock, has_already_attacked):
-    global _global_zoom, _global_zoom_point, trainer_position, zoom_delay, animation_duration
+    global _global_zoom, _global_zoom_point, trainer_position, zoom_delay, animation_duration, old_poke_centered
     
 
     
@@ -347,7 +350,9 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
     if zoom_delay>=0:
         zoom_delay -=1
     
-    if _global_zoom_point==None or (_global_zoom!=1 and has_already_attacked  and zoom_delay<0): # (map[map[0]["data"][0]].get("player") != my_trainer_id or has_already_attacked)
+    if _global_zoom_point==None or (_global_zoom!=1 and has_already_attacked  and zoom_delay<0) or (old_poke_centered and (old_poke_centered!=map[0]["data"][0] or map[map[0]["data"][0]]['player']!=my_trainer_id) ): # (map[map[0]["data"][0]].get("player") != my_trainer_id or has_already_attacked)
+        print("aaa", old_poke_centered, map[map[0]["data"][0]])
+        old_poke_centered = None
         if _global_zoom_point==None:
             _global_zoom_point= [0,-70]
             trainer_position = super_loin_trainer_position[:]
@@ -381,7 +386,7 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
         # now character
         for i in range(animation_duration):
             trainer_position[0]+=(screen_size[0]/18-_old_trainer_position[0])/animation_duration
-            trainer_position[1]+=(screen_size[1]*5/8-_old_trainer_position[1])/animation_duration
+            trainer_position[1]+=(screen_size[1]*5/8+20-_old_trainer_position[1])/animation_duration
             draw(win, screen_size, map, my_trainer_id)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -392,7 +397,7 @@ def visual_animations(inputs, screen_size, win, map, my_trainer_id, server, cloc
 
 
     if _global_zoom==1 and map[map[0]["data"][0]].get("player") == my_trainer_id and (not has_already_attacked)  and zoom_delay<0:
-
+        old_poke_centered = map[0]["data"][0]
         zoom_delay = waiting_time
 
         _old_point = _global_zoom_point[:]
@@ -462,7 +467,7 @@ def end(win, screen_size, map, my_trainer_id, clock, status):
     _old_zoom = _global_zoom
     _old_trainer_position = trainer_position[:]
 
-    for i in range(animation_duration*2):
+    for i in range(animation_duration*2 ):
         trainer_position[0]+=(super_loin_trainer_position[0]-_old_trainer_position[0])/animation_duration
         trainer_position[1]+=(super_loin_trainer_position[1]-_old_trainer_position[1])/animation_duration
         draw(win, screen_size, map, my_trainer_id)
@@ -473,7 +478,7 @@ def end(win, screen_size, map, my_trainer_id, clock, status):
         
     destination =(-430,90)
 
-    for i in range(animation_duration):
+    for i in range(animation_duration*(status!="lost")):
 
         _global_zoom_point[0]+=(destination[0]-_old_point[0])/animation_duration
         _global_zoom_point[1]+=(destination[1]-_old_point[1])/animation_duration
@@ -503,8 +508,6 @@ def end(win, screen_size, map, my_trainer_id, clock, status):
             if event.type == pygame.QUIT:
                 pygame.quit()
         clock.tick(30)
-
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

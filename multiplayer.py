@@ -6,7 +6,7 @@ import game_logics
 def multiplayer(battle_id, opponent): #main.py
     print(opponent)
 
-    opponent = {'name':opponent.name+'-f','player':'opponent','position':[], 'hp':{'current': 360, 'full': 400},'atks':opponent.atks}
+    opponent = {'name':opponent.name+'-f','player':'opponent','position':[], 'hp':{'current': 360, 'full': 400},'atks':opponent.atks,'stats':opponent.stats}
     url = 'http://pixailesoulweaver.pythonanywhere.com/StartBattle/'+battle_id+"/"+str(opponent)
     #url = 'http://127.0.0.1:8000/Send/'+player_name+'/'+str((player.get_pos()[0], player.get_pos()[1], player.direction, int(time.time())))
     #url = 'http://127.0.0.1:8000/StartBattle/'+battle_id+"/"+str(opponent)

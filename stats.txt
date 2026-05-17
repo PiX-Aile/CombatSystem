@@ -1,0 +1,7 @@
+{
+    'Squll': {'speed': 9},
+    'Cleavil': {'speed': 21},
+    'Kracranium': {'speed': 10},
+    'Sasquash' : {'speed': 40}
+
+}

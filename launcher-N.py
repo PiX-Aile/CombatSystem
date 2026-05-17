@@ -24,13 +24,16 @@ path_images=os.path.join(os.getcwd(),"Images")
 class Pokemon():
     def __init__(self, name):
         self.name = name
+        with open("stats.txt", "r") as f:
+            dico = eval(f.read())
+        
+        self.stats = dico[name]
         self.atks = []
-
 
 import time
 import random
 
-my_poke = [Pokemon("Sasquash"), Pokemon("Sasquash"), Pokemon("Sasquash")]
+my_poke = [Pokemon("Kracranium"), Pokemon("Kracranium"), Pokemon("Squll")]
 my_poke[0].atks = ["dash_Sword", "dash_SFire", "Elec_Spell"]
 my_poke[1].atks = ["dash_Sword", "dash_SFire", "Elec_Spell"]
 my_poke[2].atks = ["Elec_Spell", "Plasma", "Piplup"]
