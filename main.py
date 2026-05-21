@@ -9,6 +9,13 @@ import graphics
 
 
 def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponent):
+    
+    how_many_poke = 3
+    while len(my_poke)<3:
+        my_poke.append(my_poke[0])
+        how_many_poke-=1
+    
+
 
     has_already_attacked = [] # for animations, just after choosing attack, pokemon is still in turn order, but it has to dezoom to show attack
     # is equal to yes at first to that at the very beginning it zoomes right
@@ -41,7 +48,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
 
     time.sleep(0.5)
     print("server:",server)
-    multiplayer.player_initiation_client(server, my_poke, trainer_id, screen_size)
+    multiplayer.player_initiation_client(server, my_poke, trainer_id, screen_size, how_many_poke)
 
     
     graphics.load(path_images)
@@ -62,7 +69,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
 
         if not map:
             print("no map ???")
-            return "lost"
+            map = []
         if len(map)>2 and map[2]['hp']['current']<=0:
             return graphics.end(win, screen_size, map, trainer_id, clock, "win-")
         if len(map)<0:

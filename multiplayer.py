@@ -4,9 +4,8 @@ import game_logics
 
 
 def multiplayer(battle_id, opponent): #main.py
-    print(opponent)
 
-    opponent = {'name':opponent.name+'-f','player':'opponent','position':[], 'hp':{'current': 360, 'full': 400},'atks':opponent.atks,'stats':opponent.stats}
+    opponent = {'name':opponent.name+'-f','player':'opponent','position':[], 'hp':{'current': opponent.stats['hp'], 'full': opponent.stats['hp']},'atks':opponent.atks,'stats':opponent.stats}
     url = 'http://pixailesoulweaver.pythonanywhere.com/StartBattle/'+battle_id+"/"+str(opponent)
     #url = 'http://127.0.0.1:8000/Send/'+player_name+'/'+str((player.get_pos()[0], player.get_pos()[1], player.direction, int(time.time())))
     #url = 'http://127.0.0.1:8000/StartBattle/'+battle_id+"/"+str(opponent)
@@ -28,9 +27,9 @@ def multiplayer(battle_id, opponent): #main.py
 
 #serveur vaut : http://localhost:8000/Battle/UID/
 
-def player_initiation_client(server, my_poke, trainer_id, screen_size): #client
+def player_initiation_client(server, my_poke, trainer_id, screen_size, how_many_poke): #client
     print("init")
-    local_map = game_logics.player_initiation_client(server, my_poke, trainer_id, screen_size)
+    local_map = game_logics.player_initiation_client(server, my_poke, trainer_id, screen_size, how_many_poke)
     url = server+"Initialize_player/"+str(local_map)
     try:
         req = requests.get(url, 'html.parser')

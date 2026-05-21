@@ -99,11 +99,16 @@ def find_coordinates_for_player_initiation_server(nb):
 
 
 
-def player_initiation_client(server, my_poke, trainer_id, screen_size):
+def player_initiation_client(server, my_poke, trainer_id, screen_size, how_many_poke):
     local_map = []
     
     for poke in range(len(my_poke)):
-        local_map.append({'name':my_poke[poke].name+'-b','player':trainer_id, 'hp':{'current': 130, 'full': 130},'atks':my_poke[poke].atks,'stats':my_poke[poke].stats})
+        print(how_many_poke)
+        if poke<how_many_poke:
+            print(my_poke[poke].name)
+            local_map.append({'name':my_poke[poke].name+'-b','player':trainer_id, 'hp':{'current': my_poke[poke].stats['hp'], 'full': my_poke[poke].stats['hp']},'atks':my_poke[poke].atks,'stats':my_poke[poke].stats})
+        else :
+            local_map.append({'name':my_poke[0].name+'-b','player':trainer_id, 'hp':{'current':0, 'full': 0},'atks':[],'stats':my_poke[poke-how_many_poke].stats})
     return local_map
 
 

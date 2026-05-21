@@ -215,12 +215,15 @@ def draw(win, screen_size, map, my_trainer_id, this_is_the_end=0):
             image=pygame.transform.rotozoom(image, 0, element.get("zoom"))
 
         
-        if element.get("hp") and element["hp"]['current']<=0 and not (this_is_the_end==2):
+        if element.get("hp") and element["hp"]['full']==0:
+            image = image.copy()
+            image.fill((255, 255, 255, 0), None, pygame.BLEND_RGBA_MULT)
+        elif element.get("hp") and element["hp"]['current']==0 and not (this_is_the_end==2):
             image = image.copy()
             image.fill((255, 255, 255, 100), None, pygame.BLEND_RGBA_MULT)
         elif this_is_the_end==2:
             image.fill((255, 255, 0, 200), None, pygame.BLEND_RGBA_MULT)
-
+        
         
         
 
@@ -229,7 +232,7 @@ def draw(win, screen_size, map, my_trainer_id, this_is_the_end=0):
         win.blit(image, coordinates)
 
         # ui of hps :
-        if element.get("hp") and  _global_zoom ==1  and element["hp"]['current']>=0  and not this_is_the_end:
+        if element.get("hp") and  _global_zoom ==1  and element["hp"]['current']>=0 and element["hp"]['full']>0  and not this_is_the_end:
             
 
             if element["player"] == 'opponent':

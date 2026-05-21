@@ -17,7 +17,7 @@ pygame.mixer.music.load("Musics/Boss1-SoulWeaver.mp3")
 pygame.mixer.music.set_volume(0.7)
 
 # Start playing the song
-pygame.mixer.music.play(loops=-1)
+#pygame.mixer.music.play(loops=-1)
 
 path_images=os.path.join(os.getcwd(),"Images")
 
@@ -36,10 +36,10 @@ import time
 import random
 
 
-my_poke = [Pokemon("Squll"), Pokemon("Cleavil"), Pokemon("Squll")]
-my_poke[0].atks = ["Explosion", "dash_SFire", "dash_Sword"]
+my_poke = [Pokemon("Squll"), Pokemon("Cleavil")]
+my_poke[0].atks = ["Elec_Spell", "dash_SFire", "dash_Sword"]
 my_poke[1].atks = ["Elec_Spell", "Plasma", "Fire_Spell"]
-my_poke[2].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
+#my_poke[2].atks = ["dash_Sword", "dash_SFire", "dash_Sword"]
 
 opponent = Pokemon("Kracranium")
 opponent.atks = ["Psy"]#dash_SFire
