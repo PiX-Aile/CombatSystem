@@ -25,10 +25,6 @@ path_images=os.path.join(os.getcwd(),"Images")
 class Pokemon():
     def __init__(self, name):
         self.name = name
-        with open("stats.txt", "r") as f:
-            dico = eval(f.read())
-        
-        self.stats = dico[name]
         self.atks = []
 
 

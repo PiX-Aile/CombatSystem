@@ -5,22 +5,25 @@ import game_logics
 
 def multiplayer(battle_id, opponent): #main.py
 
-    opponent = {'name':opponent.name+'-f','player':'opponent','position':[], 'hp':{'current': opponent.stats['hp'], 'full': opponent.stats['hp']},'atks':opponent.atks,'stats':opponent.stats}
+    opponent = {'name':opponent.name+'-f','player':'opponent','position':[],'atks':opponent.atks}
     url = 'http://pixailesoulweaver.pythonanywhere.com/StartBattle/'+battle_id+"/"+str(opponent)
     #url = 'http://127.0.0.1:8000/Send/'+player_name+'/'+str((player.get_pos()[0], player.get_pos()[1], player.direction, int(time.time())))
     #url = 'http://127.0.0.1:8000/StartBattle/'+battle_id+"/"+str(opponent)
     print(url)
-    try:
-        req = requests.get(url, 'html.parser')
-    except:
-        print("server down")
-        exit()
+    while 1:
+        try:
+            req = requests.get(url, 'html.parser')
+        except:
+            print("server down")
+            exit()
 
 
-    try:
-        my_dict= eval(req.text.replace("&#x27;", "'").replace("&quot;", """ " """))
-    except:
-        print("errrror : ", req.text)
+        
+        try:
+            my_dict= eval(req.text.replace("&#x27;", "'").replace("&quot;", """ " """))
+            break
+        except:
+            print("errrror : ", req.text)
     server = my_dict["url"]
     print("received url !!!", server)
     return server

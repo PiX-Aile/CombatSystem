@@ -28,7 +28,7 @@ def load(path_images):
             image = pygame.image.load(os.path.join(path_images, "Fighting", name)) # loads the image  
 
             if name == "background.png": 
-                image=pygame.transform.rotozoom(image, 0, 0.8)
+                image=pygame.transform.rotozoom(image, 0, 0.5)
 
             elif name == "player_turn.png": 
                 image=pygame.transform.rotozoom(image, 0, 1.4)
@@ -271,28 +271,23 @@ def draw(win, screen_size, map, my_trainer_id, this_is_the_end=0):
 
     if this_is_the_end==2:
          
-         for i in range(0, 4):
-            text_co = (screen_size[0]*3/5+90, screen_size[1]*1/5+142*i +5)
+         for i in range(0, 2):
+            text_co = (screen_size[0]*3/5+90, screen_size[1]*1/5+142*i*2 +5)
             liste_co = [(screen_size[0]*2/5+20, -170+140*i +10),
-                        (screen_size[0]*2/5+80, -170+140*i +75),
+                        (screen_size[0]*2/5+10, -170+140*i*2 +20),
                         (screen_size[0]*2/5+10, -170+140*i +20),
                         (-20, 50),
                         ]
         
-            text = ["Poke1", "Poke2", "Poke3", "Free"]
+            text = ["Capture", "Free", "Poke3", "Free"]
             image = images_list[f"Banner_{(int(banner_counter)+3*i)%9+1}"]
             image.fill((255, 255, 255, 255 ), None, pygame.BLEND_RGBA_MULT)
-            if i==3:
-                image = pygame.transform.rotozoom(image, -160, 1)#1-1*(most_zoomed-_global_zoom))
-            else:
-                image = pygame.transform.rotozoom(image, 20-20*i, 1)#1-1*(most_zoomed-_global_zoom))
+
+            image = pygame.transform.rotozoom(image, 20-20*i*2, 1)#1-1*(most_zoomed-_global_zoom))
             win.blit(image, liste_co[i])
             text = font_atk.render(f'{i+1} : {text[i]}', True, (255,255,255))
-            if i==3:
-                text_co = (screen_size[0]*1/5+86, screen_size[1]*1/5+142*(i-1)-30)
-                text = pygame.transform.rotozoom(text, 20, 1)#1-1*(most_zoomed-_global_zoom))
-            else:
-                text = pygame.transform.rotozoom(text, 20-20*i, 1)
+
+            text = pygame.transform.rotozoom(text, 20-20*i*2, 1)
             win.blit(text, text_co)
 
     if _global_zoom>1 and not this_is_the_end:
@@ -479,7 +474,7 @@ def end(win, screen_size, map, my_trainer_id, clock, status):
                 pygame.quit()
         clock.tick(80)
         
-    destination =(-430,90)
+    destination =(-370,90)
 
     for i in range(animation_duration*(status!="lost")):
 
