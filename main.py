@@ -69,7 +69,7 @@ def fight(win, screen_size, path_images, my_poke, battle_id, trainer_id, opponen
 
         if not map:
             print("no map ???")
-            map = []
+            continue
         if len(map)>2 and map[2]['hp']['current']<=0:
             return graphics.end(win, screen_size, map, trainer_id, clock, "win-")
         if len(map)<0:
