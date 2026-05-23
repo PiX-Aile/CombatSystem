@@ -29,8 +29,9 @@ class Pokemon():
 import time
 import random
 
-my_poke = [Pokemon("Shroomagus")]
+my_poke = [Pokemon("Shroomagus"), Pokemon("Shroomancer")]
 my_poke[0].atks = ["dash_Sword", "dash_SFire", "Elec_Spell"]
+my_poke[1].atks = ["dash_Sword", "dash_SFire", "Elec_Spell"]
 #my_poke[1].atks = ["dash_Sword", "dash_SFire", "Elec_Spell"]
 #my_poke[2].atks = ["Elec_Spell", "Plasma", "Elec_Spell"]
 
